@@ -1,0 +1,24 @@
+{
+    "name": "WordNebula",
+    "image": "mcr.microsoft.com/devcontainers/cpp:1.0-debian-12",
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3-pip python3-lldb-14 &&  sudo ln -s /usr/lib/llvm-14/lib/python3.11/dist-packages/lldb/* /usr/lib/python3/dist-packages/lldb",
+
+    // Configure tool-specific properties.
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "aaron-bond.better-comments",
+                "oderwat.indent-rainbow",
+                "esbenp.prettier-vscode",
+                "albert.TabOut",
+                "vscode-icons-team.vscode-icons",
+                "github.vscode-github-actions",
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "ms-vscode.cpptools-extension-pack",
+                "twxs.cmake",
+                "ms-vscode.cmake-tools"
+            ]
+        }
+    }
+}
