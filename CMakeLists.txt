@@ -14,4 +14,4 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 else()
     message(FATAL_ERROR "Unsupported compiler")
 endif()
-add_executable(wordNebula WordNebula.cpp) # Uncomment and add your source files here
+add_executable(wordNebula src/WordNebula.cpp) # Uncomment and add your source files here
