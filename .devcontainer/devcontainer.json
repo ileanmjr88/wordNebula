@@ -1,7 +1,7 @@
 {
     "name": "WordNebula",
     "image": "mcr.microsoft.com/devcontainers/cpp:1.0-debian-12",
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3-pip python3-lldb-14 libncurses5-dev libncursesw5-dev &&  sudo ln -s /usr/lib/llvm-14/lib/python3.11/dist-packages/lldb/* /usr/lib/python3/dist-packages/lldb",
+    "postCreateCommand": "sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y dist-upgrade && sudo apt-get install -y python3-pip python3-lldb-14 libncurses5-dev libncursesw5-dev libspdlog-dev && sudo ln -s /usr/lib/llvm-14/lib/python3.11/dist-packages/lldb/* /usr/lib/python3/dist-packages/lldb",
 
     // Configure tool-specific properties.
     "customizations": {

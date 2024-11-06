@@ -3,6 +3,7 @@
 #pragma once
 
 #include <memory>
+#include <spdlog/spdlog.h>
 #include "TextBuffer.hpp"
 #include "WNebulaView.hpp"
 

@@ -5,7 +5,7 @@ namespace wnebula {
 WNebulaView::WNebulaView(std::shared_ptr<WNebulaPresenter> presenter) : presenter(presenter) {
     this->presenter = std::weak_ptr<WNebulaPresenter>(presenter);
     initscr();
-    noecho();
+    echo();
     keypad(stdscr, TRUE);
 }
 
@@ -24,31 +24,30 @@ void WNebulaView::render(const std::string &text, int cursorPosition) {
 
 void WNebulaView::processInput() {
     int ch = getch();
-    
-    if (auto presenterPtr = presenter.lock()) {
-        switch (ch) {
-            case KEY_BACKSPACE:
-                presenterPtr->onDelete();
-                break;
-            case KEY_LEFT:
-                presenterPtr->onMoveCursor(-1);
-                break;
-            case KEY_RIGHT:
-                presenterPtr->onMoveCursor(1);
-                break;
-            case KEY_UP:
-                presenterPtr->onMoveCursor(-10);
-                break;
-            case KEY_DOWN:
-                presenterPtr->onMoveCursor(10);
-                break;
-            case 27: // ESC key
-                presenterPtr->onExit();
-                break;
-            default:
-                presenterPtr->onInsert(static_cast<char>(ch));
-                break;
-        }
+    auto presenterPtr = presenter.lock();
+    switch (ch) {
+        case KEY_BACKSPACE:
+            presenterPtr->onDelete();
+            break;
+        case KEY_LEFT:
+            presenterPtr->onMoveCursor(-1);
+            break;
+        case KEY_RIGHT:
+            presenterPtr->onMoveCursor(1);
+            break;
+        case KEY_UP:
+            presenterPtr->onMoveCursor(-10);
+            break;
+        case KEY_DOWN:
+            presenterPtr->onMoveCursor(10);
+            break;
+        case 27: // ESC key
+            presenterPtr->onExit();
+            break;
+        default:
+            presenterPtr->onInsert(static_cast<char>(ch));
+            break;
     }
+
 }
 }// namespace wnebula

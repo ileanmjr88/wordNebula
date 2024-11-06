@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <algorithm> // Ensure this is included for std::clamp
+#include <spdlog/spdlog.h>
 
 
 namespace wnebula{

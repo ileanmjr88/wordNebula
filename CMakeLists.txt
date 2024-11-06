@@ -21,6 +21,7 @@ endif()
 
 # Find the required packages
 find_package(Curses REQUIRED)
+find_package(spdlog REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/include)
 
 # Add source files
@@ -30,4 +31,4 @@ add_executable(wordNebula
     src/Presenter/WNebulaPresenter.cpp
     src/WordNebula.cpp
 )
-target_link_libraries(wordNebula ${CURSES_LIBRARIES} form)
+target_link_libraries(wordNebula ${CURSES_LIBRARIES} spdlog::spdlog)
