@@ -1,8 +1,14 @@
-#pragma once
+#include "WNebulaPresenter.hpp"
+#include "WNebulaView.hpp"
+#include "TextBuffer.hpp"
 
-#include <iostream>
+using namespace wnebula;
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    auto presenter = std::make_shared<WNebulaPresenter>();
+    auto view = std::make_shared<WNebulaView>(presenter);
+
+    presenter->run();
+
     return 0;
 }
