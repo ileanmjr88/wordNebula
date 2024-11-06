@@ -9,6 +9,10 @@ namespace wnebula{
         currentCursor = 0;
         spdlog::info("TextBuffer created");
     }
+
+    TextBuffer::~TextBuffer(){
+        spdlog::default_logger()->flush();
+    }
     
     void TextBuffer::insertChar(char c){
         buffer.insert(currentCursor, 1, c);

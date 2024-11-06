@@ -11,6 +11,7 @@ namespace wnebula{
     class TextBuffer{
     public:
         TextBuffer();
+        ~TextBuffer();
         void insertChar(char c);
         void deleteChar();
         void moveCursor(int offset);

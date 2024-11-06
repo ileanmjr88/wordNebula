@@ -12,6 +12,7 @@ namespace wnebula {
     class WNebulaPresenter {
     public:
         WNebulaPresenter();
+        ~WNebulaPresenter();
         void onInsert(char c);
         void onDelete();
         void onMoveCursor(int delta);

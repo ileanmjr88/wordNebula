@@ -1,18 +1,23 @@
 #include "WNebulaView.hpp"
 #include "WNebulaPresenter.hpp"
+
 namespace wnebula {
 
 WNebulaView::WNebulaView(std::shared_ptr<WNebulaPresenter> presenter) : presenter(presenter) {
     this->presenter = std::weak_ptr<WNebulaPresenter>(presenter);
-    initscr();
+    auto ptr = initscr();
+    if (ptr == nullptr) {
+        spdlog::error("Failed to initialize ncurses");  
+        throw std::runtime_error("Failed to initialize ncurses");
+    }
     echo();
     keypad(stdscr, TRUE);
+    spdlog::info("WNebulaView initialized");
 }
-
-
 
 WNebulaView::~WNebulaView() {
     endwin();
+    spdlog::default_logger()->flush();  
 }
 
 void WNebulaView::render(const std::string &text, int cursorPosition) {
@@ -20,6 +25,7 @@ void WNebulaView::render(const std::string &text, int cursorPosition) {
     mvprintw(0,0, "%s",text.c_str());
     move(0, cursorPosition);
     refresh();
+    spdlog::info("Rendered text: {}", text);
 }
 
 void WNebulaView::processInput() {
@@ -48,6 +54,7 @@ void WNebulaView::processInput() {
             presenterPtr->onInsert(static_cast<char>(ch));
             break;
     }
+    spdlog::info("Processed input: {}", ch);
 
 }
 }// namespace wnebula

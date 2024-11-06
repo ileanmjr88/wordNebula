@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 #include <ncurses.h>
-
+#include <spdlog/spdlog.h>
 
 namespace wnebula{
     class WNebulaPresenter; // Forward declaration

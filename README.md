@@ -8,4 +8,3 @@ The goal of this project is implement a word processor that focuses having a dis
 - VSCode
 - CMake
 - Devcontainer (for developing in consistent environment across my different computers)
-

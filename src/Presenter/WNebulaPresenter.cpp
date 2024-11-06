@@ -8,6 +8,10 @@ WNebulaPresenter::WNebulaPresenter()
     spdlog::info("WNebulaPresenter created");
 }
 
+WNebulaPresenter::~WNebulaPresenter() {
+    spdlog::default_logger()->flush();  
+}
+
 void WNebulaPresenter::setView(std::shared_ptr<WNebulaView> view) {
     this->view = view;
     spdlog::info("View set for presenter");
