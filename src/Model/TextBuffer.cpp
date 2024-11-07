@@ -5,7 +5,7 @@
  * @author Ilean Monterrubio Jr
  */
 
-#include "TextBuffer.hpp"
+#include "Model/TextBuffer.hpp"
 
 namespace wnebula {
 
@@ -33,20 +33,28 @@ void TextBuffer::deleteChar() {
     }
 }
 
+void TextBuffer::insert(char c) { insertChar(c); }
+
+void TextBuffer::deleteText(int position, int length) {
+    if (position >= 0 && position + length <= buffer.size()) {
+        buffer.erase(position, length);
+        spdlog::info("Deleted text from position {} with length {}. Buffer: {}", position, length, buffer);
+    } else {
+        spdlog::warn("Attempted to delete text out of bounds. Buffer: {}", buffer);
+    }
+}
+
+std::string TextBuffer::getText() const { return buffer; }
+
+int TextBuffer::getCursorPosition() const { return currentCursor; }
+
 void TextBuffer::moveCursor(int offset) {
-    int newCursor = std::clamp(currentCursor + offset, 0, static_cast<int>(buffer.size()));
-    spdlog::info("Moved cursor from position {} to position {}", currentCursor, newCursor);
-    currentCursor = newCursor;
+    int newCursor = currentCursor + offset;
+    if (newCursor >= 0 && newCursor <= buffer.size()) {
+        currentCursor = newCursor;
+        spdlog::info("Moved cursor to position {}. Buffer: {}", currentCursor, buffer);
+    } else {
+        spdlog::warn("Attempted to move cursor out of bounds. Buffer: {}", buffer);
+    }
 }
-
-std::string TextBuffer::getText() const {
-    spdlog::info("Returning buffer: {}", buffer);
-    return buffer;
-}
-
-int TextBuffer::getCursorPosition() const {
-    spdlog::info("Returning cursor position: {}", currentCursor);
-    return currentCursor;
-}
-
 } // namespace wnebula

@@ -1,21 +1,25 @@
 #ifndef TEXTBUFFER_HPP
 #define TEXTBUFFER_HPP
 #pragma once
-#include <spdlog/spdlog.h>
 
-#include <algorithm> // Ensure this is included for std::clamp
+#include <algorithm>
+#include <spdlog/spdlog.h>
 #include <string>
 #include <vector>
 
+#include "Model/IBuffer.hpp"
+
 namespace wnebula {
-class TextBuffer {
+class TextBuffer : public IBuffer {
   public:
     TextBuffer();
     ~TextBuffer();
+
+    void insert(char c);
     void insertChar(char c);
     void deleteChar();
+    void deleteText(int position, int length);
     void moveCursor(int offset);
-
     std::string getText() const;
     int getCursorPosition() const;
 

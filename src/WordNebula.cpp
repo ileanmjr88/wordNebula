@@ -4,9 +4,11 @@
 #include <filesystem>
 #include <iostream>
 
-#include "TextBuffer.hpp"
+#include "Model/TextBuffer.hpp"
+#include "WNebulaModel.hpp"
 #include "WNebulaPresenter.hpp"
 #include "WNebulaView.hpp"
+
 using namespace wnebula;
 
 int main() {
@@ -20,9 +22,10 @@ int main() {
         spdlog::flush_on(spdlog::level::info); // Flush on every info log
 
         spdlog::info("Starting Word Nebula");
-        auto presenter = std::make_shared<WNebulaPresenter>();
-        auto view = std::make_shared<WNebulaView>(presenter);
-        presenter->setView(view);
+        std::shared_ptr<WNebulaPresenter> presenter = std::make_shared<WNebulaPresenter>();
+        std::shared_ptr<WNebulaModel> model = std::make_shared<WNebulaModel>();
+        std::shared_ptr<WNebulaView> view = std::make_shared<WNebulaView>(presenter);
+        presenter->setup(view, model);
         presenter->run();
     } catch (const spdlog::spdlog_ex &ex) {
         std::cerr << "Log initialization failed: " << ex.what() << std::endl;

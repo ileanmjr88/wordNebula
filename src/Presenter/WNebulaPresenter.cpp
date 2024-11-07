@@ -4,12 +4,13 @@
 
 namespace wnebula {
 
-WNebulaPresenter::WNebulaPresenter() : model(std::make_shared<TextBuffer>()) { spdlog::info("WNebulaPresenter created"); }
+WNebulaPresenter::WNebulaPresenter() { spdlog::info("WNebulaPresenter created"); }
 
 WNebulaPresenter::~WNebulaPresenter() { spdlog::default_logger()->flush(); }
 
-void WNebulaPresenter::setView(std::shared_ptr<WNebulaView> view) {
+void WNebulaPresenter::setup(std::shared_ptr<WNebulaView> view, std::shared_ptr<WNebulaModel> model) {
     this->view = view;
+    this->model = model;
     spdlog::info("View set for presenter");
 }
 

@@ -24,6 +24,7 @@ endif()
 file(GLOB_RECURSE ALL_SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_SOURCE_DIR}/include/*.hpp"
+    "${CMAKE_SOURCE_DIR}/include/Model/*.hpp"
     "${CMAKE_SOURCE_DIR}/lib/*.cpp"
     "${CMAKE_SOURCE_DIR}/tests/*.cpp"
 )
@@ -45,6 +46,7 @@ include_directories(${CURSES_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/include)
 # Add source files
 add_executable(wordNebula
     src/Model/TextBuffer.cpp
+    src/Model/WNebulaModel.cpp
     src/View/WNebulaView.cpp
     src/Presenter/WNebulaPresenter.cpp
     src/WordNebula.cpp
