@@ -12,7 +12,7 @@
 namespace wnebula {
 
 class WNebulaPresenter {
-   public:
+  public:
     WNebulaPresenter();
     ~WNebulaPresenter();
     void onInsert(char c);
@@ -23,11 +23,11 @@ class WNebulaPresenter {
 
     void run();
 
-   private:
-    std::weak_ptr<WNebulaView> view;  // Use weak_ptr to avoid circular dependency
+  private:
+    std::weak_ptr<WNebulaView> view; // Use weak_ptr to avoid circular dependency
     std::shared_ptr<TextBuffer> model;
     bool isRunning = true;
 };
-}  // namespace wnebula
+} // namespace wnebula
 
-#endif  // WNEBULAPRESENTER_HPP
+#endif // WNEBULAPRESENTER_HPP

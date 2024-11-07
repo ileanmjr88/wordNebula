@@ -49,4 +49,4 @@ int TextBuffer::getCursorPosition() const {
     return currentCursor;
 }
 
-}  // namespace wnebula
+} // namespace wnebula

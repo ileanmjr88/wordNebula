@@ -17,7 +17,7 @@ int main() {
         auto file_logger = spdlog::basic_logger_mt("basic_logger", "logs/WordNebula.log");
         spdlog::set_default_logger(file_logger);
         spdlog::set_level(spdlog::level::info);
-        spdlog::flush_on(spdlog::level::info);  // Flush on every info log
+        spdlog::flush_on(spdlog::level::info); // Flush on every info log
 
         spdlog::info("Starting Word Nebula");
         auto presenter = std::make_shared<WNebulaPresenter>();

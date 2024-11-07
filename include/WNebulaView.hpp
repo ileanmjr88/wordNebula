@@ -9,19 +9,19 @@
 #include <string>
 
 namespace wnebula {
-class WNebulaPresenter;  // Forward declaration
+class WNebulaPresenter; // Forward declaration
 
 class WNebulaView {
-   public:
+  public:
     WNebulaView(std::shared_ptr<WNebulaPresenter> presenter);
     ~WNebulaView();
 
     void render(const std::string &text, int cursorPosition);
     void processInput();
 
-   private:
+  private:
     std::weak_ptr<WNebulaPresenter> presenter;
 };
-}  // namespace wnebula
+} // namespace wnebula
 
-#endif  // WNEBULAVIEW_HPP
+#endif // WNEBULAVIEW_HPP

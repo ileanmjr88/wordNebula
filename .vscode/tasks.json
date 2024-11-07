@@ -68,6 +68,22 @@
             "problemMatcher": [
                 "$gcc"
             ]
-        }
+        },
+        {
+            "label": "CMake: clang-format",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build",
+                "--target",
+                "clang-format"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": []
+        },
     ]
 }

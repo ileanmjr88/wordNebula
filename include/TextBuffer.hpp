@@ -3,13 +3,13 @@
 #pragma once
 #include <spdlog/spdlog.h>
 
-#include <algorithm>  // Ensure this is included for std::clamp
+#include <algorithm> // Ensure this is included for std::clamp
 #include <string>
 #include <vector>
 
 namespace wnebula {
 class TextBuffer {
-   public:
+  public:
     TextBuffer();
     ~TextBuffer();
     void insertChar(char c);
@@ -19,10 +19,10 @@ class TextBuffer {
     std::string getText() const;
     int getCursorPosition() const;
 
-   private:
+  private:
     std::string buffer;
     int currentCursor = 0;
 };
-}  // namespace wnebula
+} // namespace wnebula
 
-#endif  // TEXTBUFFER_HPP
+#endif // TEXTBUFFER_HPP

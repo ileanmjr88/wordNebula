@@ -19,6 +19,24 @@ else()
     add_compile_options(-std=c11)
 endif()
 
+## Clang Format
+# Define the source files to be formatted
+file(GLOB_RECURSE ALL_SOURCE_FILES
+    "${CMAKE_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_SOURCE_DIR}/include/*.hpp"
+    "${CMAKE_SOURCE_DIR}/lib/*.cpp"
+    "${CMAKE_SOURCE_DIR}/tests/*.cpp"
+)
+
+# Add a custom target for clang-format
+add_custom_target(
+    clang-format
+    COMMAND clang-format
+    -i
+    ${ALL_SOURCE_FILES}
+    COMMENT "Running clang-format on source files"
+)
+
 # Find the required packages
 find_package(Curses REQUIRED)
 find_package(spdlog REQUIRED)
