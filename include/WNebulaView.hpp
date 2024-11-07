@@ -2,25 +2,26 @@
 #define WNEBULAVIEW_HPP
 #pragma once
 
-#include <memory>
-#include <string>
 #include <ncurses.h>
 #include <spdlog/spdlog.h>
 
-namespace wnebula{
-    class WNebulaPresenter; // Forward declaration
+#include <memory>
+#include <string>
 
-    class WNebulaView {
-    public:
-        WNebulaView(std::shared_ptr<WNebulaPresenter> presenter);
-        ~WNebulaView();
+namespace wnebula {
+class WNebulaPresenter;  // Forward declaration
 
-        void render(const std::string &text, int cursorPosition);
-        void processInput();
-    
-    private:
-        std::weak_ptr<WNebulaPresenter> presenter;
-    };
-} // namespace name
+class WNebulaView {
+   public:
+    WNebulaView(std::shared_ptr<WNebulaPresenter> presenter);
+    ~WNebulaView();
 
-#endif // WNEBULAVIEW_HPP
+    void render(const std::string &text, int cursorPosition);
+    void processInput();
+
+   private:
+    std::weak_ptr<WNebulaPresenter> presenter;
+};
+}  // namespace wnebula
+
+#endif  // WNEBULAVIEW_HPP
