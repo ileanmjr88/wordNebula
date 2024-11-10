@@ -9,6 +9,10 @@ The goal of this project is implement a word processor that focuses having a dis
 - CMake
 - Devcontainer (for developing in consistent environment across my different computers)
 
+## Dependencies
+### Libraries
+
+
 ## Application Architecture
 I decided to follow the architecture of Model View Presenter. From what I understood starting this project, it fit the scope of being a small to medium project and I like that it was not tightly couple with the **Presenter** being one doing most of the logic. 
 

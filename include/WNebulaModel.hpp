@@ -9,7 +9,7 @@
 namespace wnebula {
 
 class WNebulaModel : public IBuffer {
-public:
+  public:
     WNebulaModel();
     WNebulaModel(std::shared_ptr<TextBuffer> textBuffer);
     virtual ~WNebulaModel() override = default;
@@ -22,7 +22,7 @@ public:
     std::string getText() const override;
     int getCursorPosition() const override;
 
-private:
+  private:
     std::shared_ptr<TextBuffer> buffer;
 };
 

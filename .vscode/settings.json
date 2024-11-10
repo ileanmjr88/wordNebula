@@ -1,5 +1,6 @@
 {
     "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorTheme": "Houston",
     "editor.minimap.enabled": false,
     "files.autoSave": "afterDelay",
     "editor.renderWhitespace": "all",
