@@ -11,7 +11,7 @@
 namespace wnebula {
 class GapBuffer : public IBuffer {
   public:
-    GapBuffer(size_t initial_size = 100);
+    GapBuffer(size_t initialSize = 150);
     void insert(char c);
     void insertChar(char c);
     void deleteChar();
@@ -23,11 +23,12 @@ class GapBuffer : public IBuffer {
 
   private:
     std::vector<char> buffer;
-    size_t gap_start;
-    size_t gap_end;
+    size_t gapStart;
+    size_t gapEnd;
 
-    void move_gap_to(size_t index);
-    void resize_buffer(size_t new_size);
+    size_t getGapSpace() const;
+    void moveGapToCursor(size_t index);
+    void resizeBuffer(size_t new_size);
 };
 } // namespace wnebula
 
