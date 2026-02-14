@@ -1,5 +1,7 @@
 # Build directories
 build/**
+bin/**
+lib/**
 
 # Prerequisites
 *.d
@@ -33,3 +35,64 @@ build/**
 *.exe
 *.out
 *.app
+
+# Logs
+logs/**
+*.log
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+compile_commands.json
+.cmake/
+
+# Testing
+Testing/
+test_detail.xml
+*.gcda
+*.gcno
+*.gcov
+
+# Coverage
+coverage/**
+coverage.info
+coverage.xml
+*.profdata
+*.profraw
+
+# Doxygen documentation
+docs/html/
+docs/latex/
+docs/xml/
+Doxyfile.bak
+
+# IDE and editor files
+.vscode/settings.json
+.vscode/.ropeproject
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# vcpkg
+vcpkg_installed/
+
+# Sanitizer outputs
+*.san
+
+# Valgrind
+*.valgrind
+vgcore.*
+
+# Clang tools
+.clangd/
+.cache/
+
+# Python (for scripts)
+__pycache__/
+*.py[cod]
+*.so
+.Python
