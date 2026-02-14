@@ -96,3 +96,6 @@ __pycache__/
 *.py[cod]
 *.so
 .Python
+
+# Misc
+.claude
