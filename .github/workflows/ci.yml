@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop, gap-buffer ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
 

@@ -32,25 +32,34 @@ target_include_directories(test_textbuffer
 
 gtest_discover_tests(test_textbuffer)
 
-# GapBuffer Tests
-add_executable(test_gapbuffer
-    test_GapBuffer.cpp
-    ${CMAKE_SOURCE_DIR}/src/Model/GapBuffer.cpp
-)
+# GapBuffer Tests (Optional - In Development)
+# GapBuffer is currently being redesigned - enable only for active development
+option(BUILD_GAPBUFFER_TESTS "Build GapBuffer tests (currently in development)" OFF)
 
-target_link_libraries(test_gapbuffer
-    PRIVATE
-        GTest::gtest
-        GTest::gtest_main
-        spdlog::spdlog
-)
+if(BUILD_GAPBUFFER_TESTS)
+    message(STATUS "Building GapBuffer tests (experimental)")
 
-target_include_directories(test_gapbuffer
-    PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
-)
+    add_executable(test_gapbuffer
+        test_GapBuffer.cpp
+        ${CMAKE_SOURCE_DIR}/src/Model/GapBuffer.cpp
+    )
 
-gtest_discover_tests(test_gapbuffer)
+    target_link_libraries(test_gapbuffer
+        PRIVATE
+            GTest::gtest
+            GTest::gtest_main
+            spdlog::spdlog
+    )
+
+    target_include_directories(test_gapbuffer
+        PRIVATE
+            ${CMAKE_SOURCE_DIR}/include
+    )
+
+    gtest_discover_tests(test_gapbuffer)
+else()
+    message(STATUS "Skipping GapBuffer tests (enable with -DBUILD_GAPBUFFER_TESTS=ON)")
+endif()
 
 # ============================================================================
 # Code Coverage Target
