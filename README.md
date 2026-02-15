@@ -294,36 +294,61 @@ ______________________________________________________________________
 
 - [x] Type continuous text
 - [x] Insert character at cursor
-- [ ] Backspace / Delete
-- [ ] Cursor movement (arrows)
-- [ ] Soft line wrapping (View layer)
+- [x] Backspace (onDelete)
+- [x] Delete forward (onDeleteForward)
+- [x] Cursor movement (arrows)
+- [ ] Soft line wrapping (View layer - in progress)
 
 ### ✅ Smart Navigation
 
-- [ ] Ctrl+Left/Right - Jump by word
-- [ ] Ctrl+Up/Down - Jump by paragraph
-- [ ] Home/End - Start/end of line
-- [ ] Ctrl+Home/End - Start/end of document
+- [x] Ctrl+Left/Right - Jump by word (findNextWordBoundary,
+  findPrevWordBoundary)
+- [x] Ctrl+Up/Down - Jump by paragraph (findNextParagraph, findPrevParagraph)
+- [x] Home/End - Start/end of document
+- [ ] Ctrl+Home/End - Start/end of document (deferred - same as Home/End for
+  Phase 1)
 
 ### ✅ File Operations
 
-- [ ] Save file (Ctrl+S)
-- [ ] Load file on startup
-- [ ] Track unsaved changes (isDirty flag)
+- [x] Track unsaved changes (isDirty flag) with warnings on exit
+- [x] File I/O structure in place (saveFile, loadFile stubbed)
+- [ ] Full file I/O implementation (deferred to integration phase)
 
 ### ✅ Status Display
 
-- [ ] Word count in real-time
-- [ ] Paragraph count
-- [ ] Cursor position display
-- [ ] File name in status bar
+- [x] Word count calculation (getWordCount in Model)
+- [x] Paragraph count calculation (getParagraphCount in Model)
+- [x] Cursor position tracking (getCursorPosition)
+- [ ] Status bar UI display (View layer - in progress)
 
 ### ✅ Buffer Implementation
 
-- [ ] Update IBuffer interface (complete API)
-- [ ] Implement GapBuffer with all methods
-- [ ] Write comprehensive unit tests
-- [ ] Fix existing bugs (cursor management)
+- [x] Update IBuffer interface (complete API with full documentation)
+- [x] Implement GapBuffer with all methods
+- [x] Write comprehensive unit tests (test_GapBuffer.cpp)
+- [x] Fix existing bugs (cursor management, gap movement)
+
+### 🚧 Current Status (as of 2026-02-15)
+
+**Completed:**
+
+- ✅ **Model Layer**: IBuffer interface and GapBuffer fully implemented and
+  tested
+- ✅ **Presenter Layer**: All navigation, text operations, and state management
+  complete
+- ✅ **Test Coverage**: GapBuffer has comprehensive test suite
+
+**In Progress:**
+
+- 🟡 **View Layer**: Being developed in separate branch (phase1/view)
+- 🟡 **Integration**: Full file I/O to be implemented during integration phase
+
+**Architecture:**
+
+- Clean MVP pattern with proper separation of concerns
+- Interface-based design allowing swappable buffer implementations
+- Smart pointer usage (shared_ptr for Model, weak_ptr for View)
+- Comprehensive Doxygen documentation throughout
 
 ______________________________________________________________________
 
@@ -388,12 +413,12 @@ ______________________________________________________________________
 
 - **[CLAUDE.md](CLAUDE.md)** - Project guidelines, build system, coding
   standards
-- **[docs/PHASE1_ARCHITECTURE.md](docs/PHASE1_ARCHITECTURE.md)** - Detailed
-  Phase 1 architecture with ASCII diagrams
-- **[docs/DESIGN_MVP_WORD_PROCESSOR.md](docs/DESIGN_MVP_WORD_PROCESSOR.md)** -
-  Design decisions and Q&A
-- **[docs/BRANCHING_STRATEGY.md](docs/BRANCHING_STRATEGY.md)** - Git workflow
-  and branch protection
+- **[docs/designs/PHASE1_ARCHITECTURE.md](docs/designs/PHASE1_ARCHITECTURE.md)**
+  \- Detailed Phase 1 architecture with diagrams and implementation checklist
+- **[docs/designs/DESIGN_MVP_WORD_PROCESSOR.md](docs/designs/DESIGN_MVP_WORD_PROCESSOR.md)**
+  \- Design decisions and Q&A
+- **[docs/designs/BRANCHING_STRATEGY.md](docs/designs/BRANCHING_STRATEGY.md)** -
+  Git workflow and branch protection
 
 ### 🔧 Development Setup
 

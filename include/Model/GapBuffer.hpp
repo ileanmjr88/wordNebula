@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model/IBuffer.hpp"
+#include <algorithm>
 #include <string>
 #include <vector>
 
