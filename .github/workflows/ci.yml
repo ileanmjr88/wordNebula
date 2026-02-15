@@ -95,7 +95,7 @@ jobs:
 
     - name: Run clang-tidy
       run: |
-        cmake -B build -G Ninja -DENABLE_CLANG_TIDY=ON
+        cmake -B build -G Ninja -DENABLE_CLANG_TIDY=ON -DBUILD_TESTING=OFF
         cmake --build build 2>&1 | tee clang-tidy-output.txt
       continue-on-error: true
 
