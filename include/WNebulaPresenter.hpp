@@ -37,7 +37,7 @@ class WNebulaPresenter {
     /**
      * @brief Construct a new Presenter
      *
-     * Initializes the presenter with default state (not running, clean).
+     * Initializes the presenter with default state (running, clean).
      * Call setup() to wire View and Model before use.
      */
     WNebulaPresenter();

@@ -26,99 +26,81 @@ void WNebulaPresenter::run() {
     }
 }
 
+// Private Helper
+void WNebulaPresenter::updateView() {
+    if (auto v = view.lock()) {
+        v->render(model->getText(), model->getCursorPosition());
+    }
+}
+
 // Text Operations
 void WNebulaPresenter::onInsert(char c) {
     model->insertChar(c);
     isDirty = true;
-    if (auto v = view.lock()) { // Convert weak_ptr to shared_ptr
-        v->render(model->getText(), model->getCursorPosition());
-        spdlog::info("Rendered text");
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onDelete() {
     model->deleteChar();
     isDirty = true;
-    if (auto v = view.lock()) { // Convert weak_ptr to shared_ptr
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onDeleteForward() {
     model->deleteForward();
     isDirty = true;
-    if (auto v = view.lock()) { // Convert weak_ptr to shared_ptr
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 // Single Character Navigation
 void WNebulaPresenter::onMoveCursorLeft() {
     model->moveCursor(-1);
-    if (auto v = view.lock()) { // Convert weak_ptr to shared_ptr
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onMoveCursorRight() {
     model->moveCursor(1);
-    if (auto v = view.lock()) { // Convert weak_ptr to shared_ptr
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onMoveCursor(int offset) {
     model->moveCursor(offset);
-    if (auto v = view.lock()) {
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 // Smart Navigation
 void WNebulaPresenter::onCtrlLeft() {
     const int pos = model->findPrevWordBoundary(model->getCursorPosition());
     model->setCursorPosition(pos);
-    if (auto v = view.lock()) {
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onCtrlRight() {
     const int pos = model->findNextWordBoundary(model->getCursorPosition());
     model->setCursorPosition(pos);
-    if (auto v = view.lock()) {
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onCtrlUp() {
     const int pos = model->findPrevParagraph(model->getCursorPosition());
     model->setCursorPosition(pos);
-    if (auto v = view.lock()) {
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onCtrlDown() {
     const int pos = model->findNextParagraph(model->getCursorPosition());
     model->setCursorPosition(pos);
-    if (auto v = view.lock()) {
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onHome() {
     model->setCursorPosition(0);
-    if (auto v = view.lock()) {
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 void WNebulaPresenter::onEnd() {
     model->setCursorPosition(model->getLength());
-    if (auto v = view.lock()) {
-        v->render(model->getText(), model->getCursorPosition());
-    }
+    updateView();
 }
 
 // Application Control

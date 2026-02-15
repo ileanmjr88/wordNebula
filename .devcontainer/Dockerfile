@@ -87,6 +87,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Code coverage
     lcov \
     gcovr \
+    # Font utilities (needed for fc-cache)
+    fontconfig \
     # Python for scripting and pre-commit
     python3 \
     python3-pip \
@@ -154,11 +156,13 @@ USER root
 RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes
 
 # Install Nerd Fonts for icon support in terminal
+# Pinned to v3.1.1 for reproducible builds
+ARG NERD_FONTS_VERSION=v3.1.1
 RUN mkdir -p /usr/share/fonts/truetype/nerd-fonts && \
     cd /tmp && \
-    curl -fLo "FiraCode.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip && \
+    curl -fLo "FiraCode.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/${NERD_FONTS_VERSION}/FiraCode.zip" && \
     unzip -qo FiraCode.zip -d /usr/share/fonts/truetype/nerd-fonts/ && \
-    curl -fLo "Hack.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip && \
+    curl -fLo "Hack.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/${NERD_FONTS_VERSION}/Hack.zip" && \
     unzip -qo Hack.zip -d /usr/share/fonts/truetype/nerd-fonts/ && \
     rm -f FiraCode.zip Hack.zip && \
     fc-cache -fv
