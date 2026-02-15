@@ -1,5 +1,6 @@
 #include "Model/GapBuffer.hpp"
 #include <algorithm>
+#include <cassert>
 #include <cctype>
 #include <cstddef>
 #include <spdlog/spdlog.h>
@@ -29,8 +30,8 @@ void GapBuffer::insertChar(char c) {
 void GapBuffer::insertText(const std::string &text) {
     moveGapToCursor();
 
-    while (getGapSize() < text.size()) {
-        expandGap();
+    if (getGapSize() < text.size()) {
+        expandGap(text.size());
     }
 
     // Insert each character in the text
@@ -60,6 +61,9 @@ void GapBuffer::deleteForward() {
 }
 
 void GapBuffer::deleteText(int position, int length) {
+    if (position < 0 || length < 0 || position + length > getLength()) {
+        return;
+    }
     setCursorPosition(position);
     moveGapToCursor();
     for (int i = 0; i < length && gapEnd < buffer.size(); i++) {
@@ -182,6 +186,7 @@ int GapBuffer::getParagraphCount() const {
 
 // Private Helpers
 char GapBuffer::getCharAt(int logicalPos) const {
+    assert(logicalPos >= 0 && logicalPos < getLength() && "getCharAt: logicalPos out of bounds");
     const auto pos = static_cast<size_t>(logicalPos);
     if (pos < gapStart) {
         return buffer[pos];
@@ -203,9 +208,9 @@ size_t GapBuffer::getGapSize() const {
     return gapEnd - gapStart;
 }
 
-void GapBuffer::expandGap() {
-    // Resize the buffer
-    const size_t newSize = std::max(buffer.size() * 2, static_cast<size_t>(1));
+void GapBuffer::expandGap(size_t minGapSize) {
+    const size_t contentSize = buffer.size() - getGapSize();
+    const size_t newSize = std::max(buffer.size() * 2, contentSize + minGapSize);
 
     std::vector<char> newBuffer(newSize);
     // Copy the text before the gap

@@ -225,6 +225,52 @@ TEST_F(GapBufferTest, MultipleDeletes) {
     EXPECT_EQ(buffer->getLength(), 0);
 }
 
+TEST_F(GapBufferTest, DeleteTextAdjustsCursor) {
+    buffer->insertText("Hello World");
+    // Cursor is at 11 (end)
+    buffer->deleteText(5, 6); // Delete " World"
+    EXPECT_EQ(buffer->getText(), "Hello");
+    EXPECT_EQ(buffer->getCursorPosition(), 5);
+}
+
+TEST_F(GapBufferTest, DeleteTextOutOfBounds) {
+    buffer->insertText("Hi");
+    buffer->deleteText(0, 10);          // Length exceeds buffer
+    EXPECT_EQ(buffer->getText(), "Hi"); // No change beyond buffer size
+}
+
+TEST_F(GapBufferTest, GetTextRangeOutOfBounds) {
+    buffer->insertText("Hi");
+    EXPECT_EQ(buffer->getTextRange(-1, 2), "");
+    EXPECT_EQ(buffer->getTextRange(0, 10), "Hi"); // Clamps to available text
+    EXPECT_EQ(buffer->getTextRange(5, 3), "");    // Start beyond buffer
+}
+
+TEST_F(GapBufferTest, DeleteForwardAtEnd) {
+    buffer->insertText("Hi");
+    buffer->deleteForward(); // Cursor at end, nothing to delete
+    EXPECT_EQ(buffer->getText(), "Hi");
+    EXPECT_EQ(buffer->getLength(), 2);
+}
+
+TEST_F(GapBufferTest, DeleteForwardFromEmpty) {
+    buffer->deleteForward();
+    EXPECT_EQ(buffer->getText(), "");
+    EXPECT_EQ(buffer->getLength(), 0);
+}
+
+TEST_F(GapBufferTest, SetCursorPositionClampedToEnd) {
+    buffer->insertText("Hi");
+    buffer->setCursorPosition(100);
+    EXPECT_EQ(buffer->getCursorPosition(), 2);
+}
+
+TEST_F(GapBufferTest, SetCursorPositionClampedToStart) {
+    buffer->insertText("Hi");
+    buffer->setCursorPosition(-5);
+    EXPECT_EQ(buffer->getCursorPosition(), 0);
+}
+
 TEST_F(GapBufferTest, AlternatingInsertDelete) {
     for (int i = 0; i < 10; ++i) {
         buffer->insertChar('X');

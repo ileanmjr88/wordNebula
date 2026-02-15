@@ -118,12 +118,12 @@ class GapBuffer : public IBuffer {
     void moveGapToCursor();
 
     /**
-     * @brief Expand gap when it's full
+     * @brief Expand gap to accommodate at least minGapSize characters
      *
-     * Doubles the buffer size and adjusts gap.
-     * Called when gapStart >= gapEnd (gap has no space).
+     * Doubles the buffer size or grows to fit minGapSize, whichever is larger.
+     * @param minGapSize Minimum required gap size (default: 1)
      */
-    void expandGap();
+    void expandGap(size_t minGapSize = 1);
 
     /**
      * @brief Get current gap size
