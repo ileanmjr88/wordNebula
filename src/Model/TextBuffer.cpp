@@ -65,7 +65,7 @@ void TextBuffer::moveCursor(int offset) { setCursorPosition(currentCursor + offs
 // Smart Navigation
 int TextBuffer::findNextWordBoundary(int fromPos) const {
     const int len = static_cast<int>(buffer.size());
-    int pos = fromPos;
+    int pos = std::clamp(fromPos, 0, len);
     // Skip current word (non-whitespace)
     while (pos < len && std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos)])) == 0) {
         pos++;
@@ -78,7 +78,7 @@ int TextBuffer::findNextWordBoundary(int fromPos) const {
 }
 
 int TextBuffer::findPrevWordBoundary(int fromPos) const {
-    int pos = fromPos;
+    int pos = std::clamp(fromPos, 0, getLength());
     // Skip whitespace backwards
     while (pos > 0 && std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos - 1)])) != 0) {
         pos--;
@@ -92,7 +92,7 @@ int TextBuffer::findPrevWordBoundary(int fromPos) const {
 
 int TextBuffer::findNextParagraph(int fromPos) const {
     const int len = static_cast<int>(buffer.size());
-    int pos = fromPos;
+    int pos = std::clamp(fromPos, 0, len);
     while (pos < len) {
         if (buffer[static_cast<size_t>(pos)] == '\n') {
             return pos + 1;
@@ -103,7 +103,7 @@ int TextBuffer::findNextParagraph(int fromPos) const {
 }
 
 int TextBuffer::findPrevParagraph(int fromPos) const {
-    int pos = fromPos;
+    int pos = std::clamp(fromPos, 0, getLength());
     if (pos > 0) {
         pos--; // Move back from current position
     }

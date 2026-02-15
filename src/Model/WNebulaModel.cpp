@@ -1,13 +1,13 @@
 #include "WNebulaModel.hpp"
+#include "Model/GapBuffer.hpp"
 #include "Model/IBuffer.hpp"
-#include "Model/TextBuffer.hpp"
 #include <memory>
 #include <string>
 #include <utility>
 
 namespace wnebula {
 
-WNebulaModel::WNebulaModel() : buffer(std::make_shared<TextBuffer>()) {}
+WNebulaModel::WNebulaModel() : buffer(std::make_shared<GapBuffer>()) {}
 
 WNebulaModel::WNebulaModel(std::shared_ptr<IBuffer> buf) : buffer(std::move(buf)) {}
 

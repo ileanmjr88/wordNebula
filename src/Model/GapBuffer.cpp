@@ -113,7 +113,7 @@ void GapBuffer::setCursorPosition(int position) { cursor = std::clamp(position, 
 // Smart Navigation
 int GapBuffer::findNextWordBoundary(int fromPos) const {
     const int len = getLength();
-    int pos = fromPos;
+    int pos = std::clamp(fromPos, 0, len);
     while (pos < len && !isWhitespace(getCharAt(pos))) {
         pos++;
     }
@@ -124,7 +124,7 @@ int GapBuffer::findNextWordBoundary(int fromPos) const {
 }
 
 int GapBuffer::findPrevWordBoundary(int fromPos) const {
-    int pos = fromPos;
+    int pos = std::clamp(fromPos, 0, getLength());
     while (pos > 0 && isWhitespace(getCharAt(pos - 1))) {
         pos--;
     }
@@ -136,7 +136,7 @@ int GapBuffer::findPrevWordBoundary(int fromPos) const {
 
 int GapBuffer::findNextParagraph(int fromPos) const {
     const int len = getLength();
-    int pos = fromPos;
+    int pos = std::clamp(fromPos, 0, len);
     while (pos < len) {
         if (getCharAt(pos) == '\n') {
             return pos + 1;
@@ -147,7 +147,7 @@ int GapBuffer::findNextParagraph(int fromPos) const {
 }
 
 int GapBuffer::findPrevParagraph(int fromPos) const {
-    int pos = fromPos;
+    int pos = std::clamp(fromPos, 0, getLength());
     if (pos > 0) {
         pos--;
     }
