@@ -26,23 +26,23 @@ target_include_directories(test_textbuffer PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 gtest_discover_tests(test_textbuffer)
 
-# WNebulaPresenter Tests (Disabled - waiting for View fixes) The Presenter tests
-# are written but can't be compiled until the View is fixed in the phase1/view
-# branch (View currently calls non-existent onMoveCursor method)
-#
-# add_executable(test_presenter test_WNebulaPresenter.cpp
-# ${CMAKE_SOURCE_DIR}/src/Presenter/WNebulaPresenter.cpp
-# ${CMAKE_SOURCE_DIR}/src/Model/WNebulaModel.cpp
-# ${CMAKE_SOURCE_DIR}/src/Model/GapBuffer.cpp
-# ${CMAKE_SOURCE_DIR}/src/View/WNebulaView.cpp )
-#
-# target_link_libraries(test_presenter PRIVATE GTest::gtest GTest::gtest_main
-# spdlog::spdlog ncurses )
-#
-# target_include_directories(test_presenter PRIVATE ${CMAKE_SOURCE_DIR}/include
-# )
-#
-# gtest_discover_tests(test_presenter)
+# WNebulaPresenter Tests
+add_executable(
+  test_presenter
+  test_WNebulaPresenter.cpp
+  ${CMAKE_SOURCE_DIR}/src/Presenter/WNebulaPresenter.cpp
+  ${CMAKE_SOURCE_DIR}/src/Model/WNebulaModel.cpp
+  ${CMAKE_SOURCE_DIR}/src/Model/GapBuffer.cpp
+  ${CMAKE_SOURCE_DIR}/src/View/WNebulaView.cpp
+)
+
+target_link_libraries(
+  test_presenter PRIVATE GTest::gtest GTest::gtest_main spdlog::spdlog ncurses
+)
+
+target_include_directories(test_presenter PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+gtest_discover_tests(test_presenter)
 
 # GapBuffer Tests (Optional - In Development) GapBuffer is currently being
 # redesigned - enable only for active development

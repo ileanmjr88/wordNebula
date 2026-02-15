@@ -58,7 +58,9 @@ int TextBuffer::getLength() const { return static_cast<int>(buffer.size()); }
 // Cursor Management
 int TextBuffer::getCursorPosition() const { return currentCursor; }
 
-void TextBuffer::setCursorPosition(int position) { currentCursor = std::clamp(position, 0, static_cast<int>(buffer.size())); }
+void TextBuffer::setCursorPosition(int position) {
+    currentCursor = std::clamp(position, 0, static_cast<int>(buffer.size()));
+}
 
 void TextBuffer::moveCursor(int offset) { setCursorPosition(currentCursor + offset); }
 

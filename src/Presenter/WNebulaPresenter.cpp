@@ -9,8 +9,6 @@ namespace wnebula {
 
 WNebulaPresenter::WNebulaPresenter() { spdlog::info("WNebulaPresenter created"); }
 
-WNebulaPresenter::~WNebulaPresenter() { spdlog::default_logger()->flush(); }
-
 void WNebulaPresenter::setup(const std::shared_ptr<WNebulaView> &newView, std::shared_ptr<WNebulaModel> newModel) {
     view = newView;
     model = std::move(newModel);
@@ -21,6 +19,9 @@ void WNebulaPresenter::run() {
     while (isRunning) {
         if (auto v = view.lock()) { // Convert weak_ptr to shared_ptr
             v->processInput();
+        } else {
+            spdlog::error("WNebulaPresenter::run: View is no longer available, stopping run loop");
+            break;
         }
     }
 }
@@ -62,6 +63,13 @@ void WNebulaPresenter::onMoveCursorLeft() {
 void WNebulaPresenter::onMoveCursorRight() {
     model->moveCursor(1);
     if (auto v = view.lock()) { // Convert weak_ptr to shared_ptr
+        v->render(model->getText(), model->getCursorPosition());
+    }
+}
+
+void WNebulaPresenter::onMoveCursor(int offset) {
+    model->moveCursor(offset);
+    if (auto v = view.lock()) {
         v->render(model->getText(), model->getCursorPosition());
     }
 }
@@ -125,15 +133,11 @@ void WNebulaPresenter::onExit() {
 }
 
 // File I/O
-void WNebulaPresenter::saveFile(const std::string &path) {
-    isDirty = false;
-    return;
-}
+void WNebulaPresenter::saveFile(const std::string &path) { isDirty = false; }
 
 void WNebulaPresenter::loadFile(const std::string &path) {
     currentFilePath = path;
     isDirty = false;
-    return;
 }
 
 [[nodiscard]] bool WNebulaPresenter::getIsDirty() const { return isDirty; }

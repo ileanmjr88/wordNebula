@@ -10,7 +10,9 @@
 
 namespace wnebula {
 // Default Constructor
-GapBuffer::GapBuffer(size_t initialSize) : buffer(std::max(initialSize, static_cast<size_t>(1))), gapStart(0), gapEnd(std::max(initialSize, static_cast<size_t>(1))), cursor(0) {
+GapBuffer::GapBuffer(size_t initialSize)
+    : buffer(std::max(initialSize, static_cast<size_t>(1))), gapStart(0),
+      gapEnd(std::max(initialSize, static_cast<size_t>(1))), cursor(0) {
     spdlog::info("GapBuffer created with initial size: {}", buffer.size());
 }
 
@@ -224,7 +226,8 @@ void GapBuffer::expandGap(size_t minGapSize) {
 
     // Copy the text after the gap
     const size_t newGapEnd = newSize - (buffer.size() - gapEnd);
-    std::copy(buffer.begin() + static_cast<std::ptrdiff_t>(gapEnd), buffer.end(), newBuffer.begin() + static_cast<std::ptrdiff_t>(newGapEnd));
+    std::copy(buffer.begin() + static_cast<std::ptrdiff_t>(gapEnd), buffer.end(),
+              newBuffer.begin() + static_cast<std::ptrdiff_t>(newGapEnd));
 
     // Update gap pointers
     gapEnd = newGapEnd;
@@ -248,13 +251,17 @@ void GapBuffer::moveGapToCursor() {
     // Identify the direction of the cursor
     if (cursorPos < gapStart) {
         // Move the gap to the left
-        std::copy_backward(buffer.begin() + static_cast<std::ptrdiff_t>(cursorPos), buffer.begin() + static_cast<std::ptrdiff_t>(gapStart), buffer.begin() + static_cast<std::ptrdiff_t>(gapEnd));
+        std::copy_backward(buffer.begin() + static_cast<std::ptrdiff_t>(cursorPos),
+                           buffer.begin() + static_cast<std::ptrdiff_t>(gapStart),
+                           buffer.begin() + static_cast<std::ptrdiff_t>(gapEnd));
         gapStart = cursorPos;
         gapEnd = cursorPos + offset;
     } else if (cursorPos > gapStart) {
         // Move the gap to the right
         const size_t charsToMove = cursorPos - gapStart;
-        std::copy(buffer.begin() + static_cast<std::ptrdiff_t>(gapEnd), buffer.begin() + static_cast<std::ptrdiff_t>(gapEnd + charsToMove), buffer.begin() + static_cast<std::ptrdiff_t>(gapStart));
+        std::copy(buffer.begin() + static_cast<std::ptrdiff_t>(gapEnd),
+                  buffer.begin() + static_cast<std::ptrdiff_t>(gapEnd + charsToMove),
+                  buffer.begin() + static_cast<std::ptrdiff_t>(gapStart));
         gapStart = cursorPos;
         gapEnd = cursorPos + offset;
     }

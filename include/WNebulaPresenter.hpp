@@ -45,9 +45,9 @@ class WNebulaPresenter {
     /**
      * @brief Destroy the Presenter
      *
-     * Flushes logs and cleans up resources.
+     * Default
      */
-    ~WNebulaPresenter();
+    ~WNebulaPresenter() = default;
 
     // Non-copyable, non-movable
     WNebulaPresenter(const WNebulaPresenter &) = delete;
@@ -114,6 +114,16 @@ class WNebulaPresenter {
      * Triggers View render with new cursor position.
      */
     void onMoveCursorRight();
+
+    /**
+     * @brief Move cursor by offset (generic navigation)
+     *
+     * Bridge method for View compatibility. Moves cursor by specified offset.
+     * Negative offset moves left, positive offset moves right.
+     *
+     * @param offset Number of positions to move (-1 = left, +1 = right)
+     */
+    void onMoveCursor(int offset);
 
     // ========================================================================
     // Smart Navigation
