@@ -61,15 +61,15 @@ class GapBuffer : public IBuffer {
     // TEXT ACCESS (IBuffer interface implementation)
     // ========================================================================
 
-    std::string getText() const override;
-    std::string getTextRange(int start, int length) const override;
-    int getLength() const override;
+    [[nodiscard]] std::string getText() const override;
+    [[nodiscard]] std::string getTextRange(int start, int length) const override;
+    [[nodiscard]] int getLength() const override;
 
     // ========================================================================
     // CURSOR MANAGEMENT (IBuffer interface implementation)
     // ========================================================================
 
-    int getCursorPosition() const override;
+    [[nodiscard]] int getCursorPosition() const override;
     void setCursorPosition(int position) override;
     void moveCursor(int offset) override;
 
@@ -77,17 +77,17 @@ class GapBuffer : public IBuffer {
     // SMART NAVIGATION (IBuffer interface implementation)
     // ========================================================================
 
-    int findNextWordBoundary(int fromPos) const override;
-    int findPrevWordBoundary(int fromPos) const override;
-    int findNextParagraph(int fromPos) const override;
-    int findPrevParagraph(int fromPos) const override;
+    [[nodiscard]] int findNextWordBoundary(int fromPos) const override;
+    [[nodiscard]] int findPrevWordBoundary(int fromPos) const override;
+    [[nodiscard]] int findNextParagraph(int fromPos) const override;
+    [[nodiscard]] int findPrevParagraph(int fromPos) const override;
 
     // ========================================================================
     // STATISTICS (IBuffer interface implementation)
     // ========================================================================
 
-    int getWordCount() const override;
-    int getParagraphCount() const override;
+    [[nodiscard]] int getWordCount() const override;
+    [[nodiscard]] int getParagraphCount() const override;
 
   private:
     // ========================================================================
@@ -129,7 +129,7 @@ class GapBuffer : public IBuffer {
      * @brief Get current gap size
      * @return Number of unused positions in gap
      */
-    size_t getGapSize() const;
+    [[nodiscard]] size_t getGapSize() const;
 
     /**
      * @brief Get character at logical position (skipping gap)
@@ -139,14 +139,14 @@ class GapBuffer : public IBuffer {
      * Converts logical position to physical buffer position,
      * accounting for the gap.
      */
-    char getCharAt(int logicalPos) const;
+    [[nodiscard]] char getCharAt(int logicalPos) const;
 
     /**
      * @brief Check if character is whitespace
      * @param c Character to check
      * @return true if whitespace (space, tab, newline, etc.)
      */
-    static bool isWhitespace(char c);
+    [[nodiscard]] static bool isWhitespace(char c);
 };
 
 } // namespace wnebula

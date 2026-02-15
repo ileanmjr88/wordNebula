@@ -61,13 +61,19 @@ void GapBuffer::deleteForward() {
 }
 
 void GapBuffer::deleteText(int position, int length) {
-    if (position < 0 || length < 0 || position + length > getLength()) {
+    if (position < 0 || length < 0 || length > getLength() - position) {
         return;
     }
+    const int savedCursor = cursor;
     setCursorPosition(position);
     moveGapToCursor();
     for (int i = 0; i < length && gapEnd < buffer.size(); i++) {
         gapEnd++;
+    }
+    if (savedCursor > position) {
+        cursor = std::max(position, savedCursor - length);
+    } else {
+        cursor = savedCursor;
     }
 }
 
@@ -88,10 +94,10 @@ std::string GapBuffer::getTextRange(int start, int length) const {
     if (start < 0 || length <= 0 || start >= getLength()) {
         return "";
     }
-    const int end = std::min(start + length, getLength());
+    const int clampedLength = std::min(length, getLength() - start);
     std::string result;
-    result.reserve(static_cast<size_t>(end - start));
-    for (int i = start; i < end; i++) {
+    result.reserve(static_cast<size_t>(clampedLength));
+    for (int i = start; i < start + clampedLength; i++) {
         result += getCharAt(i);
     }
     return result;

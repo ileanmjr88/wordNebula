@@ -233,6 +233,22 @@ TEST_F(GapBufferTest, DeleteTextAdjustsCursor) {
     EXPECT_EQ(buffer->getCursorPosition(), 5);
 }
 
+TEST_F(GapBufferTest, DeleteTextCursorBeforeDeletion) {
+    buffer->insertText("Hello World");
+    buffer->setCursorPosition(3); // Cursor at 'l' in "Hello"
+    buffer->deleteText(6, 5);     // Delete "World"
+    EXPECT_EQ(buffer->getText(), "Hello ");
+    EXPECT_EQ(buffer->getCursorPosition(), 3); // Cursor unchanged
+}
+
+TEST_F(GapBufferTest, DeleteTextCursorWithinDeletion) {
+    buffer->insertText("Hello World");
+    buffer->setCursorPosition(8); // Cursor within "World"
+    buffer->deleteText(5, 6);     // Delete " World"
+    EXPECT_EQ(buffer->getText(), "Hello");
+    EXPECT_EQ(buffer->getCursorPosition(), 5); // Clamped to deletion point
+}
+
 TEST_F(GapBufferTest, DeleteTextOutOfBounds) {
     buffer->insertText("Hi");
     buffer->deleteText(0, 10);          // Length exceeds buffer

@@ -18,24 +18,24 @@ class TextBuffer : public IBuffer {
     void deleteText(int position, int length) override;
 
     // Text Access
-    std::string getText() const override;
-    std::string getTextRange(int start, int length) const override;
-    int getLength() const override;
+    [[nodiscard]] std::string getText() const override;
+    [[nodiscard]] std::string getTextRange(int start, int length) const override;
+    [[nodiscard]] int getLength() const override;
 
     // Cursor Management
-    int getCursorPosition() const override;
+    [[nodiscard]] int getCursorPosition() const override;
     void setCursorPosition(int position) override;
     void moveCursor(int offset) override;
 
     // Smart Navigation
-    int findNextWordBoundary(int fromPos) const override;
-    int findPrevWordBoundary(int fromPos) const override;
-    int findNextParagraph(int fromPos) const override;
-    int findPrevParagraph(int fromPos) const override;
+    [[nodiscard]] int findNextWordBoundary(int fromPos) const override;
+    [[nodiscard]] int findPrevWordBoundary(int fromPos) const override;
+    [[nodiscard]] int findNextParagraph(int fromPos) const override;
+    [[nodiscard]] int findPrevParagraph(int fromPos) const override;
 
     // Statistics
-    int getWordCount() const override;
-    int getParagraphCount() const override;
+    [[nodiscard]] int getWordCount() const override;
+    [[nodiscard]] int getParagraphCount() const override;
 
   private:
     std::string buffer;

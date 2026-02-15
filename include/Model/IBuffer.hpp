@@ -85,7 +85,7 @@ class IBuffer {
      * Used for: save to file, word count, search
      * Performance: O(n) - may need to reconstruct string from internal representation
      */
-    virtual std::string getText() const = 0;
+    [[nodiscard]] virtual std::string getText() const = 0;
 
     /**
      * @brief Get substring of buffer
@@ -96,13 +96,13 @@ class IBuffer {
      * Used for: viewport rendering (only get visible portion)
      * Example: buffer="Hello World", getTextRange(0, 5) → "Hello"
      */
-    virtual std::string getTextRange(int start, int length) const = 0;
+    [[nodiscard]] virtual std::string getTextRange(int start, int length) const = 0;
 
     /**
      * @brief Get total character count
      * @return Number of characters in buffer
      */
-    virtual int getLength() const = 0;
+    [[nodiscard]] virtual int getLength() const = 0;
 
     // ========================================================================
     // CURSOR MANAGEMENT
@@ -115,7 +115,7 @@ class IBuffer {
      * Position 0 = before first character
      * Position length = after last character
      */
-    virtual int getCursorPosition() const = 0;
+    [[nodiscard]] virtual int getCursorPosition() const = 0;
 
     /**
      * @brief Set cursor to absolute position
@@ -154,7 +154,7 @@ class IBuffer {
      * findNextWordBoundary(0) → 6
      * findNextWordBoundary(6) → 11
      */
-    virtual int findNextWordBoundary(int fromPos) const = 0;
+    [[nodiscard]] virtual int findNextWordBoundary(int fromPos) const = 0;
 
     /**
      * @brief Find position of previous word boundary
@@ -163,7 +163,7 @@ class IBuffer {
      *
      * Used for: Ctrl+Left navigation
      */
-    virtual int findPrevWordBoundary(int fromPos) const = 0;
+    [[nodiscard]] virtual int findPrevWordBoundary(int fromPos) const = 0;
 
     /**
      * @brief Find position of next paragraph (next \n or end of buffer)
@@ -177,7 +177,7 @@ class IBuffer {
      *           0      7     14
      * findNextParagraph(0) → 7
      */
-    virtual int findNextParagraph(int fromPos) const = 0;
+    [[nodiscard]] virtual int findNextParagraph(int fromPos) const = 0;
 
     /**
      * @brief Find position of previous paragraph (previous \n or start)
@@ -186,7 +186,7 @@ class IBuffer {
      *
      * Used for: Ctrl+Up navigation
      */
-    virtual int findPrevParagraph(int fromPos) const = 0;
+    [[nodiscard]] virtual int findPrevParagraph(int fromPos) const = 0;
 
     // ========================================================================
     // STATISTICS (for status bar display)
@@ -200,7 +200,7 @@ class IBuffer {
      * Example: "Hello World\n" → 2 words
      * Used for: status bar display
      */
-    virtual int getWordCount() const = 0;
+    [[nodiscard]] virtual int getWordCount() const = 0;
 
     /**
      * @brief Count paragraphs in buffer
@@ -210,7 +210,7 @@ class IBuffer {
      * Example: "Line 1\nLine 2" → 2 paragraphs
      * Empty buffer → 1 paragraph
      */
-    virtual int getParagraphCount() const = 0;
+    [[nodiscard]] virtual int getParagraphCount() const = 0;
 };
 
 } // namespace wnebula

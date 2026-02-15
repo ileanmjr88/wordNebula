@@ -168,7 +168,8 @@ TEST_F(TextBufferTest, GetTextRange) {
 TEST_F(TextBufferTest, GetTextRangeOutOfBounds) {
     buffer->insertText("Hi");
     EXPECT_EQ(buffer->getTextRange(-1, 2), "");
-    EXPECT_EQ(buffer->getTextRange(0, 10), "");
+    EXPECT_EQ(buffer->getTextRange(0, 10), "Hi"); // Clamps to available text
+    EXPECT_EQ(buffer->getTextRange(5, 3), "");    // Start beyond buffer
 }
 
 TEST_F(TextBufferTest, GetTextRangeFullBuffer) {

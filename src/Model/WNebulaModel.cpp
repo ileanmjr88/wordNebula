@@ -1,5 +1,9 @@
 #include "WNebulaModel.hpp"
+#include "Model/IBuffer.hpp"
 #include "Model/TextBuffer.hpp"
+#include <memory>
+#include <string>
+#include <utility>
 
 namespace wnebula {
 

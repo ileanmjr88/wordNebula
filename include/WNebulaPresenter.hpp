@@ -1,5 +1,3 @@
-#ifndef WNEBULAPRESENTER_HPP
-#define WNEBULAPRESENTER_HPP
 #pragma once
 
 #include <memory>
@@ -14,11 +12,17 @@ class WNebulaPresenter {
   public:
     WNebulaPresenter();
     ~WNebulaPresenter();
+
+    WNebulaPresenter(const WNebulaPresenter &) = delete;
+    WNebulaPresenter &operator=(const WNebulaPresenter &) = delete;
+    WNebulaPresenter(WNebulaPresenter &&) = delete;
+    WNebulaPresenter &operator=(WNebulaPresenter &&) = delete;
+
     void onInsert(char c);
     void onDelete();
     void onMoveCursor(int delta);
     void onExit();
-    void setup(std::shared_ptr<WNebulaView> view, std::shared_ptr<WNebulaModel> model);
+    void setup(const std::shared_ptr<WNebulaView> &newView, std::shared_ptr<WNebulaModel> newModel);
 
     void run();
 
@@ -28,5 +32,3 @@ class WNebulaPresenter {
     bool isRunning = true;
 };
 } // namespace wnebula
-
-#endif // WNEBULAPRESENTER_HPP

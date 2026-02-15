@@ -1,6 +1,7 @@
 #include "Model/TextBuffer.hpp"
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
 #include <spdlog/spdlog.h>
 
 namespace wnebula {
@@ -32,11 +33,12 @@ void TextBuffer::deleteForward() {
 }
 
 void TextBuffer::deleteText(int position, int length) {
-    if (position >= 0 && static_cast<size_t>(position + length) <= buffer.size()) {
-        buffer.erase(static_cast<size_t>(position), static_cast<size_t>(length));
-        if (currentCursor > position) {
-            currentCursor = std::max(position, currentCursor - length);
-        }
+    if (position < 0 || length < 0 || length > getLength() - position) {
+        return;
+    }
+    buffer.erase(static_cast<size_t>(position), static_cast<size_t>(length));
+    if (currentCursor > position) {
+        currentCursor = std::max(position, currentCursor - length);
     }
 }
 
@@ -44,10 +46,11 @@ void TextBuffer::deleteText(int position, int length) {
 std::string TextBuffer::getText() const { return buffer; }
 
 std::string TextBuffer::getTextRange(int start, int length) const {
-    if (start < 0 || static_cast<size_t>(start + length) > buffer.size()) {
+    if (start < 0 || length <= 0 || start >= getLength()) {
         return "";
     }
-    return buffer.substr(static_cast<size_t>(start), static_cast<size_t>(length));
+    const int clampedLength = std::min(length, getLength() - start);
+    return buffer.substr(static_cast<size_t>(start), static_cast<size_t>(clampedLength));
 }
 
 int TextBuffer::getLength() const { return static_cast<int>(buffer.size()); }
@@ -64,11 +67,11 @@ int TextBuffer::findNextWordBoundary(int fromPos) const {
     const int len = static_cast<int>(buffer.size());
     int pos = fromPos;
     // Skip current word (non-whitespace)
-    while (pos < len && !std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos)]))) {
+    while (pos < len && std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos)])) == 0) {
         pos++;
     }
     // Skip whitespace
-    while (pos < len && std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos)]))) {
+    while (pos < len && std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos)])) != 0) {
         pos++;
     }
     return pos;
@@ -77,11 +80,11 @@ int TextBuffer::findNextWordBoundary(int fromPos) const {
 int TextBuffer::findPrevWordBoundary(int fromPos) const {
     int pos = fromPos;
     // Skip whitespace backwards
-    while (pos > 0 && std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos - 1)]))) {
+    while (pos > 0 && std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos - 1)])) != 0) {
         pos--;
     }
     // Skip word backwards
-    while (pos > 0 && !std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos - 1)]))) {
+    while (pos > 0 && std::isspace(static_cast<unsigned char>(buffer[static_cast<size_t>(pos - 1)])) == 0) {
         pos--;
     }
     return pos;
@@ -118,7 +121,7 @@ int TextBuffer::getWordCount() const {
     int count = 0;
     bool inWord = false;
     for (const char c : buffer) {
-        if (std::isspace(static_cast<unsigned char>(c))) {
+        if (std::isspace(static_cast<unsigned char>(c)) != 0) {
             inWord = false;
         } else if (!inWord) {
             inWord = true;
