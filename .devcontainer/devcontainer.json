@@ -17,39 +17,31 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                // Code Quality & Formatting
                 "aaron-bond.better-comments",
                 "oderwat.indent-rainbow",
                 "xaver.clang-format",
                 "notskm.clang-tidy",
                 "cschlosser.doxdocgen",
-
-                // C++ Development
                 "ms-vscode.cpptools-extension-pack",
                 "ms-vscode.cpptools",
                 "ms-vscode.cmake-tools",
                 "twxs.cmake",
                 "jeff-hykin.better-cpp-syntax",
-
-                // Testing & Debugging
                 "matepek.vscode-catch2-test-adapter",
                 "hbenl.vscode-test-explorer",
-
-                // Git & GitHub
                 "github.vscode-github-actions",
                 "GitHub.copilot",
                 "GitHub.copilot-chat",
                 "eamodio.gitlens",
-
-                // UI & Productivity
                 "albert.TabOut",
                 "vscode-icons-team.vscode-icons",
+                "PKief.material-icon-theme",
+                "miguelsolorio.fluent-icons",
                 "astro-build.houston",
-
-                // Documentation
                 "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
                 "bierner.markdown-mermaid",
-                "yzhang.markdown-all-in-one"
+                "yzhang.markdown-all-in-one",
+                "Anthropic.claude-code"
             ],
             "settings": {
                 "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",

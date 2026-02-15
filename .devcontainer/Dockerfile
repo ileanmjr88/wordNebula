@@ -112,13 +112,9 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
     apt-get install -y gh && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python CLI tools via pipx (respects PEP 668)
+# Install pipx for Python CLI tools (respects PEP 668)
 RUN apt-get update && apt-get install -y --no-install-recommends pipx && \
-    rm -rf /var/lib/apt/lists/* && \
-    pipx install pre-commit && \
-    pipx install cmakelang && \
-    pipx install gcovr
-ENV PATH="/root/.local/bin:$PATH"
+    rm -rf /var/lib/apt/lists/*
 
 # Install vcpkg
 ENV VCPKG_ROOT=/opt/vcpkg
@@ -157,20 +153,36 @@ RUN groupadd --gid $USER_GID $USERNAME && \
 USER root
 RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes
 
+# Install Nerd Fonts for icon support in terminal
+RUN mkdir -p /usr/share/fonts/truetype/nerd-fonts && \
+    cd /tmp && \
+    curl -fLo "FiraCode.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip && \
+    unzip -qo FiraCode.zip -d /usr/share/fonts/truetype/nerd-fonts/ && \
+    curl -fLo "Hack.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip && \
+    unzip -qo Hack.zip -d /usr/share/fonts/truetype/nerd-fonts/ && \
+    rm -f FiraCode.zip Hack.zip && \
+    fc-cache -fv
+
 # Install oh-my-zsh for better terminal experience
 USER $USERNAME
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
+# Install Python CLI tools via pipx for vscode user
+RUN pipx install pre-commit && \
+    pipx install cmakelang && \
+    pipx install gcovr
+
 # Configure zsh with Starship
 RUN echo 'export VCPKG_ROOT=/opt/vcpkg' >> ~/.zshrc && \
     echo 'export PATH=$VCPKG_ROOT:$PATH' >> ~/.zshrc && \
+    echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.zshrc && \
     echo 'export CCACHE_DIR=/workspace/.ccache' >> ~/.zshrc && \
     echo 'alias cmake="cmake -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"' >> ~/.zshrc && \
     echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 
 # Create Starship config
 RUN mkdir -p ~/.config && \
-    cat > ~/.config/starship.toml << 'EOF'
+    cat > ~/.config/starship.toml <<'STARSHIP_EOF'
 # Starship configuration for wordNebula development
 format = """
 [┌───────────────────────────────────────────>](bold green)
@@ -207,7 +219,7 @@ style = "yellow bold"
 [character]
 success_symbol = "[❯](purple)"
 error_symbol = "[❯](red)"
-EOF
+STARSHIP_EOF
 
 USER root
 

@@ -123,16 +123,34 @@ ______________________________________________________________________
 
 ```cpp
 class WNebulaPresenter {
-    void onKeyPress(char key);           // User pressed a key
+    // Text operations
+    void onInsert(char c);               // User typed a character
+    void onDelete();                     // Backspace
+    void onDeleteForward();              // Delete key
+
+    // Navigation
+    void onMoveCursorLeft();             // Arrow left
+    void onMoveCursorRight();            // Arrow right
+    void onCtrlLeft();                   // Jump to prev word
     void onCtrlRight();                  // Jump to next word
-    void onCtrlS();                      // Save file
-    void updateViewport();               // Recalculate visible text
+    void onCtrlUp();                     // Jump to prev paragraph
+    void onCtrlDown();                   // Jump to next paragraph
+    void onHome();                       // Start of document
+    void onEnd();                        // End of document
+
+    // File I/O
+    void saveFile(const std::string& path);
+    void loadFile(const std::string& path);
+
+    // Application control
+    void onExit();
 
 private:
-    int viewportStart;   // First visible character position
-    int viewportEnd;     // Last visible character position
-    IBuffer* buffer;     // The text content
-    WNebulaView* view;   // The display
+    std::weak_ptr<WNebulaView> view;      // The display
+    std::shared_ptr<WNebulaModel> model;  // The text content
+    bool isRunning;                       // Main loop flag
+    bool isDirty;                         // Unsaved changes?
+    std::string currentFilePath;          // Current file path
 };
 ```
 
@@ -604,47 +622,51 @@ ______________________________________________________________________
 
 #### ✅ Step 1: Update IBuffer Interface
 
-- [ ] Update `include/Model/IBuffer.hpp` with full interface
-- [ ] Add new methods: `getTextRange()`, `findNextWordBoundary()`, etc.
-- [ ] Add documentation comments
+- [x] Update `include/Model/IBuffer.hpp` with full interface
+- [x] Add new methods: `getTextRange()`, `findNextWordBoundary()`, etc.
+- [x] Add documentation comments
 
 #### ✅ Step 2: Implement GapBuffer
 
-- [ ] Fix existing bugs (destructor, default args)
-- [ ] Implement missing methods:
-  - [ ] `getText()` - extract text from buffer (skip gap)
-  - [ ] `getTextRange(start, length)` - substring extraction
-  - [ ] `deleteForward()` - delete at cursor
-  - [ ] `insertText(string)` - insert multiple chars
-  - [ ] `setCursorPosition(pos)` - absolute cursor move
-  - [ ] `findNextWordBoundary(pos)` - scan for word boundaries
-  - [ ] `findPrevWordBoundary(pos)`
-  - [ ] `findNextParagraph(pos)` - scan for \\n
-  - [ ] `findPrevParagraph(pos)`
-  - [ ] `getWordCount()` - count words
-  - [ ] `getParagraphCount()` - count \\n + 1
-- [ ] Write tests for all methods
-- [ ] Fix `moveGapToCursor()` right-moving logic
+- [x] Fix existing bugs (destructor, default args)
+- [x] Implement all IBuffer interface methods:
+  - [x] `getText()` - extract text from buffer (skip gap)
+  - [x] `getTextRange(start, length)` - substring extraction
+  - [x] `deleteForward()` - delete at cursor
+  - [x] `insertText(string)` - insert multiple chars
+  - [x] `setCursorPosition(pos)` - absolute cursor move
+  - [x] `findNextWordBoundary(pos)` - scan for word boundaries
+  - [x] `findPrevWordBoundary(pos)`
+  - [x] `findNextParagraph(pos)` - scan for \\n
+  - [x] `findPrevParagraph(pos)`
+  - [x] `getWordCount()` - count words
+  - [x] `getParagraphCount()` - count \\n + 1
+- [x] Write comprehensive tests for all methods (`test_GapBuffer.cpp`)
+- [x] Fix `moveGapToCursor()` right-moving logic
+
+**Status**: ✅ COMPLETE - GapBuffer is fully implemented and tested
 
 #### ✅ Step 3: Update Presenter
 
-- [ ] Add viewport management
+- [ ] Add viewport management (DEFERRED - not needed for MVP)
   - [ ] Track `viewportStart`, `viewportEnd`
   - [ ] Method: `updateViewport()` - calculate visible range
   - [ ] Method: `ensureCursorVisible()` - scroll if needed
-- [ ] Implement navigation commands
-  - [ ] `onArrowLeft()`, `onArrowRight()`
-  - [ ] `onCtrlLeft()` - jump to prev word
-  - [ ] `onCtrlRight()` - jump to next word
-  - [ ] `onHome()` - start of paragraph
-  - [ ] `onEnd()` - end of paragraph
-  - [ ] `onCtrlHome()` - start of document
-  - [ ] `onCtrlEnd()` - end of document
-- [ ] Implement file I/O
-  - [ ] `saveFile(filename)` - write buffer to file
-  - [ ] `loadFile(filename)` - read file into buffer
-  - [ ] Track `isDirty` flag (unsaved changes)
-- [ ] Word count display
+- [x] Implement navigation commands
+  - [x] `onMoveCursorLeft()`, `onMoveCursorRight()` - single character movement
+  - [x] `onCtrlLeft()` - jump to prev word boundary
+  - [x] `onCtrlRight()` - jump to next word boundary
+  - [x] `onCtrlUp()` - jump to prev paragraph boundary (NEW)
+  - [x] `onCtrlDown()` - jump to next paragraph boundary (NEW)
+  - [x] `onHome()` - start of document (position 0)
+  - [x] `onEnd()` - end of document (position = length)
+- [x] Implement file I/O (partial - structure in place)
+  - [x] `saveFile(filename)` - write buffer to file (stubbed)
+  - [x] `loadFile(filename)` - read file into buffer (stubbed)
+  - [x] Track `isDirty` flag (unsaved changes)
+  - [x] Track `currentFilePath`
+  - [x] Warn on exit with unsaved changes
+- [ ] Word count display (DEFERRED - View responsibility)
   - [ ] Call `buffer->getWordCount()` periodically
   - [ ] Update status bar
 
@@ -727,8 +749,20 @@ ______________________________________________________________________
 - ✅ Interface-based design (can swap buffer implementations)
 - ✅ Styling layer comes later (separate from buffer)
 
-**Next Step**: Implement updated IBuffer interface and GapBuffer
+**Current Status** (as of 2026-02-15):
+
+- ✅ **Step 1**: IBuffer interface complete with full documentation
+- ✅ **Step 2**: GapBuffer fully implemented and tested
+- ✅ **Step 3**: Presenter navigation and state management complete
+- 🟡 **Step 3**: File I/O structure in place (needs implementation)
+- ⏸️ **Step 4**: View implementation in progress (separate branch)
+
+**Next Steps**:
+
+1. Implement file I/O in Presenter (`saveFile()`, `loadFile()`)
+1. Complete View layer with proper rendering and input handling
+1. Integration testing of MVP components
 
 ______________________________________________________________________
 
-*Ready to start coding when you are!*
+*Phase 1 Presenter: Nearly Complete!*

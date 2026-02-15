@@ -16,6 +16,7 @@
     "[cpp]": {
         "editor.defaultFormatter": "xaver.clang-format"
     },
+    "editor.fontSize": 14,
     "cmake.options.advanced": {
         "build": {
             "statusBarVisibility": "inherit",
