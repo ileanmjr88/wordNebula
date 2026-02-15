@@ -3,10 +3,11 @@ cmake_minimum_required(VERSION 3.16)
 # ============================================================================
 # Project Configuration
 # ============================================================================
-project(wordNebula
-    VERSION 0.1.0
-    DESCRIPTION "A distraction-free terminal-based word processor"
-    LANGUAGES CXX
+project(
+  wordNebula
+  VERSION 0.1.0
+  DESCRIPTION "A distraction-free terminal-based word processor"
+  LANGUAGES CXX
 )
 
 # ============================================================================
@@ -21,7 +22,10 @@ option(BUILD_DOCUMENTATION "Build Doxygen documentation" OFF)
 
 # Set default build type to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type" FORCE)
+  set(CMAKE_BUILD_TYPE
+      "Debug"
+      CACHE STRING "Build type" FORCE
+  )
 endif()
 
 # ============================================================================
@@ -41,45 +45,45 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # Compiler Warnings
 # ============================================================================
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    add_compile_options(
-        -Wall
-        -Wextra
-        -Wpedantic
-        -Wshadow
-        -Wnon-virtual-dtor
-        -Wold-style-cast
-        -Wcast-align
-        -Wunused
-        -Woverloaded-virtual
-        -Wconversion
-        -Wsign-conversion
-        -Wformat=2
-        -Wimplicit-fallthrough
-    )
+  add_compile_options(
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wshadow
+    -Wnon-virtual-dtor
+    -Wold-style-cast
+    -Wcast-align
+    -Wunused
+    -Woverloaded-virtual
+    -Wconversion
+    -Wsign-conversion
+    -Wformat=2
+    -Wimplicit-fallthrough
+  )
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    add_compile_options(/W4 /permissive-)
+  add_compile_options(/W4 /permissive-)
 endif()
 
 # ============================================================================
 # Sanitizers (Debug builds)
 # ============================================================================
 if(ENABLE_SANITIZERS AND CMAKE_BUILD_TYPE MATCHES "Debug")
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-        add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
-        add_link_options(-fsanitize=address,undefined)
-        message(STATUS "Enabled AddressSanitizer and UndefinedBehaviorSanitizer")
-    endif()
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=address,undefined)
+    message(STATUS "Enabled AddressSanitizer and UndefinedBehaviorSanitizer")
+  endif()
 endif()
 
 # ============================================================================
 # Code Coverage
 # ============================================================================
 if(ENABLE_COVERAGE AND CMAKE_BUILD_TYPE MATCHES "Debug")
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-        add_compile_options(--coverage -O0 -g)
-        add_link_options(--coverage)
-        message(STATUS "Enabled code coverage")
-    endif()
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(--coverage -O0 -g)
+    add_link_options(--coverage)
+    message(STATUS "Enabled code coverage")
+  endif()
 endif()
 
 # ============================================================================
@@ -91,19 +95,14 @@ find_package(spdlog REQUIRED)
 # ============================================================================
 # Include Directories
 # ============================================================================
-include_directories(
-    ${PROJECT_SOURCE_DIR}/include
-    ${CURSES_INCLUDE_DIR}
-)
+include_directories(${PROJECT_SOURCE_DIR}/include ${CURSES_INCLUDE_DIR})
 
 # ============================================================================
 # Source Files
 # ============================================================================
 set(WORDNEBULA_SOURCES
-    src/Model/TextBuffer.cpp
-    src/Model/WNebulaModel.cpp
-    src/View/WNebulaView.cpp
-    src/Presenter/WNebulaPresenter.cpp
+    src/Model/TextBuffer.cpp src/Model/GapBuffer.cpp src/Model/WNebulaModel.cpp
+    src/View/WNebulaView.cpp src/Presenter/WNebulaPresenter.cpp
     src/WordNebula.cpp
 )
 
@@ -112,92 +111,86 @@ set(WORDNEBULA_SOURCES
 # ============================================================================
 add_executable(wordNebula ${WORDNEBULA_SOURCES})
 
-target_link_libraries(wordNebula
-    PRIVATE
-        ${CURSES_LIBRARIES}
-        spdlog::spdlog
-)
+target_link_libraries(wordNebula PRIVATE ${CURSES_LIBRARIES} spdlog::spdlog)
 
-target_include_directories(wordNebula
-    PRIVATE
-        ${PROJECT_SOURCE_DIR}/include
-)
+target_include_directories(wordNebula PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
 # ============================================================================
 # Clang-Tidy Integration
 # ============================================================================
 if(ENABLE_CLANG_TIDY)
-    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
-    if(CLANG_TIDY_EXE)
-        set_target_properties(wordNebula PROPERTIES
-            CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy"
-        )
-        message(STATUS "Enabled clang-tidy")
-    else()
-        message(WARNING "clang-tidy requested but executable not found")
-    endif()
+  find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+  if(CLANG_TIDY_EXE)
+    set(CLANG_TIDY_CONF "${CMAKE_SOURCE_DIR}/.clang-tidy")
+    set_target_properties(
+      wordNebula
+      PROPERTIES CXX_CLANG_TIDY
+                 "${CLANG_TIDY_EXE};--config-file=${CLANG_TIDY_CONF}"
+    )
+    message(STATUS "Enabled clang-tidy")
+  else()
+    message(WARNING "clang-tidy requested but executable not found")
+  endif()
 endif()
 
 # ============================================================================
 # Cppcheck Integration
 # ============================================================================
 if(ENABLE_CPPCHECK)
-    find_program(CPPCHECK_EXE NAMES "cppcheck")
-    if(CPPCHECK_EXE)
-        set_target_properties(wordNebula PROPERTIES
-            CXX_CPPCHECK "${CPPCHECK_EXE};--enable=all;--suppress=missingIncludeSystem"
-        )
-        message(STATUS "Enabled cppcheck")
-    else()
-        message(WARNING "cppcheck requested but executable not found")
-    endif()
+  find_program(CPPCHECK_EXE NAMES "cppcheck")
+  if(CPPCHECK_EXE)
+    set(CPPCHECK_OPTS "--enable=all;--suppress=missingIncludeSystem")
+    set_target_properties(
+      wordNebula PROPERTIES CXX_CPPCHECK "${CPPCHECK_EXE};${CPPCHECK_OPTS}"
+    )
+    message(STATUS "Enabled cppcheck")
+  else()
+    message(WARNING "cppcheck requested but executable not found")
+  endif()
 endif()
 
 # ============================================================================
 # Clang-Format Target
 # ============================================================================
-file(GLOB_RECURSE ALL_SOURCE_FILES
-    "${CMAKE_SOURCE_DIR}/src/*.cpp"
-    "${CMAKE_SOURCE_DIR}/include/*.h"
-    "${CMAKE_SOURCE_DIR}/include/*.hpp"
-    "${CMAKE_SOURCE_DIR}/tests/*.cpp"
+file(GLOB_RECURSE ALL_SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp"
+     "${CMAKE_SOURCE_DIR}/include/*.h" "${CMAKE_SOURCE_DIR}/include/*.hpp"
+     "${CMAKE_SOURCE_DIR}/tests/*.cpp"
 )
 
 find_program(CLANG_FORMAT_EXE NAMES "clang-format")
 if(CLANG_FORMAT_EXE)
-    add_custom_target(format
-        COMMAND ${CLANG_FORMAT_EXE} -i ${ALL_SOURCE_FILES}
-        COMMENT "Running clang-format on source files"
-        VERBATIM
-    )
+  add_custom_target(
+    format
+    COMMAND ${CLANG_FORMAT_EXE} -i ${ALL_SOURCE_FILES}
+    COMMENT "Running clang-format on source files"
+    VERBATIM
+  )
 endif()
 
 # ============================================================================
 # Testing
 # ============================================================================
 if(BUILD_TESTING)
-    enable_testing()
-    add_subdirectory(tests)
+  enable_testing()
+  add_subdirectory(tests)
 endif()
 
 # ============================================================================
 # Documentation
 # ============================================================================
 if(BUILD_DOCUMENTATION)
-    find_package(Doxygen)
-    if(DOXYGEN_FOUND)
-        add_subdirectory(docs)
-    else()
-        message(WARNING "Doxygen not found, documentation will not be built")
-    endif()
+  find_package(Doxygen)
+  if(DOXYGEN_FOUND)
+    add_subdirectory(docs)
+  else()
+    message(WARNING "Doxygen not found, documentation will not be built")
+  endif()
 endif()
 
 # ============================================================================
 # Installation
 # ============================================================================
-install(TARGETS wordNebula
-    RUNTIME DESTINATION bin
-)
+install(TARGETS wordNebula RUNTIME DESTINATION bin)
 
 # ============================================================================
 # Print Configuration Summary
@@ -208,7 +201,10 @@ message(STATUS "WordNebula Configuration Summary")
 message(STATUS "================================")
 message(STATUS "Version:           ${PROJECT_VERSION}")
 message(STATUS "Build Type:        ${CMAKE_BUILD_TYPE}")
-message(STATUS "C++ Compiler:      ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+message(
+  STATUS
+    "C++ Compiler:      ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}"
+)
 message(STATUS "C++ Standard:      C++${CMAKE_CXX_STANDARD}")
 message(STATUS "")
 message(STATUS "Options:")

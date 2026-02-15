@@ -114,14 +114,14 @@ TEST_F(TextBufferTest, MoveCursorBackward) {
 
 TEST_F(TextBufferTest, MoveCursorBeyondBounds) {
     buffer->insertChar('H');
-    buffer->moveCursor(10); // Try to move beyond buffer
+    buffer->moveCursor(10);                    // Try to move beyond buffer
     EXPECT_EQ(buffer->getCursorPosition(), 1); // Should stay at end
 }
 
 TEST_F(TextBufferTest, MoveCursorBeforeBounds) {
     buffer->insertChar('H');
-    buffer->moveCursor(-10); // Try to move before start
-    EXPECT_EQ(buffer->getCursorPosition(), 1); // Should stay at current position
+    buffer->moveCursor(-10);                   // Try to move before start
+    EXPECT_EQ(buffer->getCursorPosition(), 0); // Should clamp to start
 }
 
 // ============================================================================

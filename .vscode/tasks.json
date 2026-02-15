@@ -70,14 +70,14 @@
             ]
         },
         {
-            "label": "CMake: clang-format",
+            "label": "CMake: Format Code",
             "type": "shell",
             "command": "cmake",
             "args": [
                 "--build",
                 "build",
                 "--target",
-                "clang-format"
+                "format"
             ],
             "group": {
                 "kind": "build",
