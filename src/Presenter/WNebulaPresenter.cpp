@@ -1,6 +1,9 @@
 #include "WNebulaPresenter.hpp"
-
+#include "WNebulaModel.hpp"
 #include "WNebulaView.hpp"
+#include <memory>
+#include <spdlog/spdlog.h>
+#include <utility>
 
 namespace wnebula {
 
@@ -8,9 +11,9 @@ WNebulaPresenter::WNebulaPresenter() { spdlog::info("WNebulaPresenter created");
 
 WNebulaPresenter::~WNebulaPresenter() { spdlog::default_logger()->flush(); }
 
-void WNebulaPresenter::setup(std::shared_ptr<WNebulaView> view, std::shared_ptr<WNebulaModel> model) {
-    this->view = view;
-    this->model = model;
+void WNebulaPresenter::setup(const std::shared_ptr<WNebulaView> &newView, std::shared_ptr<WNebulaModel> newModel) {
+    view = newView;
+    model = std::move(newModel);
     spdlog::info("View set for presenter");
 }
 

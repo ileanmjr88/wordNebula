@@ -2,12 +2,13 @@
 
 > A distraction-free terminal-based word processor for writers
 
-[![CI](https://github.com/YOUR-USERNAME/wordNebula/workflows/CI/badge.svg)](https://github.com/YOUR-USERNAME/wordNebula/actions)
+[![CI](https://github.com/ileanmjr88/wordNebula/actions/workflows/ci.yml/badge.svg)](https://github.com/ileanmjr88/wordNebula/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
----
+______________________________________________________________________
 
 ## Table of Contents
+
 - [Introduction](#introduction)
 - [Architecture](#architecture)
   - [MVP Pattern](#mvp-pattern-overview)
@@ -19,31 +20,36 @@
 - [Documentation](#documentation)
 - [Dependencies](#dependencies)
 
----
+______________________________________________________________________
 
 ## Introduction
 
-**The Problem**: Modern word processors are full of distractions—toolbars, notifications, endless formatting options. Professional writers (like George R.R. Martin with WordStar) prefer simple, focused tools.
+**The Problem**: Modern word processors are full of distractions—toolbars,
+notifications, endless formatting options. Professional writers (like George
+R.R. Martin with WordStar) prefer simple, focused tools.
 
 **The Solution**: wordNebula is a terminal-based word processor that provides:
+
 - ✅ Distraction-free writing environment
 - ✅ Keyboard-centric workflow (hands stay on keyboard)
 - ✅ Efficient text editing (GapBuffer for fast typing)
 - ✅ Simple file management (save/load plain text)
 
 **Target Users**:
+
 - **Bloggers** - Draft posts without distraction
 - **Novelists** - Write long-form prose
 - **Screenwriters** - (Future) Screenplay format support
 - **Playwrights** - (Future) Theatrical format support
 
----
+______________________________________________________________________
 
 ## Architecture
 
 ### MVP Pattern Overview
 
-wordNebula follows the **Model-View-Presenter** (MVP) architectural pattern for clean separation of concerns and testability.
+wordNebula follows the **Model-View-Presenter** (MVP) architectural pattern for
+clean separation of concerns and testability.
 
 ```mermaid
 graph TB
@@ -245,7 +251,7 @@ sequenceDiagram
     View-->>User: Display scrolled view
 ```
 
----
+______________________________________________________________________
 
 ## Development Roadmap
 
@@ -280,11 +286,12 @@ timeline
                : PDF generation
 ```
 
----
+______________________________________________________________________
 
 ## Phase 1: MVP Features
 
 ### ✅ Core Editing
+
 - [x] Type continuous text
 - [x] Insert character at cursor
 - [ ] Backspace / Delete
@@ -292,29 +299,33 @@ timeline
 - [ ] Soft line wrapping (View layer)
 
 ### ✅ Smart Navigation
+
 - [ ] Ctrl+Left/Right - Jump by word
 - [ ] Ctrl+Up/Down - Jump by paragraph
 - [ ] Home/End - Start/end of line
 - [ ] Ctrl+Home/End - Start/end of document
 
 ### ✅ File Operations
+
 - [ ] Save file (Ctrl+S)
 - [ ] Load file on startup
 - [ ] Track unsaved changes (isDirty flag)
 
 ### ✅ Status Display
+
 - [ ] Word count in real-time
 - [ ] Paragraph count
 - [ ] Cursor position display
 - [ ] File name in status bar
 
 ### ✅ Buffer Implementation
+
 - [ ] Update IBuffer interface (complete API)
 - [ ] Implement GapBuffer with all methods
 - [ ] Write comprehensive unit tests
 - [ ] Fix existing bugs (cursor management)
 
----
+______________________________________________________________________
 
 ## Build & Run
 
@@ -353,8 +364,8 @@ cmake -B build -G Ninja \
 ### Development Tools
 
 ```bash
-# Format code
-./format.sh
+# Format code (automatic via pre-commit hooks)
+cmake --build build --target format
 
 # Run static analysis
 cmake -B build -DENABLE_CLANG_TIDY=ON
@@ -369,32 +380,43 @@ cmake --build build --target coverage
 valgrind --leak-check=full ./build/bin/wordNebula
 ```
 
----
+______________________________________________________________________
 
 ## Documentation
 
 ### 📚 Architecture & Design
-- **[CLAUDE.md](CLAUDE.md)** - Project guidelines, build system, coding standards
-- **[docs/PHASE1_ARCHITECTURE.md](docs/PHASE1_ARCHITECTURE.md)** - Detailed Phase 1 architecture with ASCII diagrams
-- **[docs/DESIGN_MVP_WORD_PROCESSOR.md](docs/DESIGN_MVP_WORD_PROCESSOR.md)** - Design decisions and Q&A
-- **[docs/BRANCHING_STRATEGY.md](docs/BRANCHING_STRATEGY.md)** - Git workflow and branch protection
+
+- **[CLAUDE.md](CLAUDE.md)** - Project guidelines, build system, coding
+  standards
+- **[docs/PHASE1_ARCHITECTURE.md](docs/PHASE1_ARCHITECTURE.md)** - Detailed
+  Phase 1 architecture with ASCII diagrams
+- **[docs/DESIGN_MVP_WORD_PROCESSOR.md](docs/DESIGN_MVP_WORD_PROCESSOR.md)** -
+  Design decisions and Q&A
+- **[docs/BRANCHING_STRATEGY.md](docs/BRANCHING_STRATEGY.md)** - Git workflow
+  and branch protection
 
 ### 🔧 Development Setup
-- **[POST_REBUILD_GUIDE.md](POST_REBUILD_GUIDE.md)** - DevContainer setup instructions
-- **[.devcontainer/README.md](.devcontainer/README.md)** - Container configuration details
+
+- **[POST_REBUILD_GUIDE.md](POST_REBUILD_GUIDE.md)** - DevContainer setup
+  instructions
+- **[.devcontainer/README.md](.devcontainer/README.md)** - Container
+  configuration details
 
 ### 📝 Session Notes
+
 - **[SESSION_2026-02-14.md](SESSION_2026-02-14.md)** - Design session summary
 
----
+______________________________________________________________________
 
 ## Dependencies
 
 ### Core Libraries
+
 - **ncurses** - Terminal UI rendering
 - **spdlog** - Structured logging
 
 ### Development Tools
+
 - **CMake 3.16+** - Build system
 - **Ninja** - Build tool (recommended)
 - **Clang 16** - Default compiler (GCC 12 also supported)
@@ -408,7 +430,8 @@ valgrind --leak-check=full ./build/bin/wordNebula
 
 ### Installation (DevContainer)
 
-The project includes a DevContainer with all dependencies pre-installed. Open in VS Code with the Remote-Containers extension:
+The project includes a DevContainer with all dependencies pre-installed. Open in
+VS Code with the Remote-Containers extension:
 
 ```bash
 # 1. Open VS Code
@@ -438,13 +461,14 @@ sudo apt-get update && sudo apt-get install -y \
     doxygen
 ```
 
----
+______________________________________________________________________
 
 ## Development Environment
 
 ### Compiler Configuration
 
 wordNebula defaults to **Clang 16** for compilation:
+
 - Better diagnostics and error messages
 - Faster incremental builds
 - Superior sanitizer support (AddressSanitizer, UBSan)
@@ -455,6 +479,7 @@ GCC 12 is also supported as an alternative.
 ### CI/CD
 
 GitHub Actions runs on every push to `main` and `develop`:
+
 - ✅ Build and test (Debug mode)
 - ✅ Code coverage reporting (Codecov)
 - ✅ Static analysis (clang-tidy, cppcheck)
@@ -466,13 +491,14 @@ See [.github/workflows/ci.yml](.github/workflows/ci.yml) for details.
 ### Branch Protection
 
 The `main` branch is protected and requires:
+
 - ✅ Pull request before merging
 - ✅ All CI checks must pass
 - ✅ No direct pushes allowed
 
 See [docs/BRANCHING_STRATEGY.md](docs/BRANCHING_STRATEGY.md) for git workflow.
 
----
+______________________________________________________________________
 
 ## Project Structure
 
@@ -509,51 +535,56 @@ wordNebula/
 └── README.md                   # This file
 ```
 
----
+______________________________________________________________________
 
 ## Contributing
 
-This is currently a solo project for learning and portfolio purposes. However, suggestions and feedback are welcome!
+This is currently a solo project for learning and portfolio purposes. However,
+suggestions and feedback are welcome!
 
 If you'd like to contribute:
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Follow the coding guidelines in [CLAUDE.md](CLAUDE.md)
-4. Ensure all tests pass and code is formatted (`./format.sh`)
-5. Submit a pull request
 
----
+1. Fork the repository
+1. Create a feature branch (`git checkout -b feature/amazing-feature`)
+1. Follow the coding guidelines in [CLAUDE.md](CLAUDE.md)
+1. Ensure all tests pass (formatting handled automatically by pre-commit hooks)
+1. Submit a pull request
+
+______________________________________________________________________
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+for details.
 
----
+______________________________________________________________________
 
 ## Acknowledgments
 
 Inspired by:
+
 - **WordStar** - George R.R. Martin's tool of choice
 - **WriteRoom** - Distraction-free writing for Mac
 - **iA Writer** - Clean, focused writing interface
 
 Built with guidance from modern software engineering practices:
+
 - Clean architecture (MVP pattern)
 - Test-driven development (Google Test)
 - Continuous integration (GitHub Actions)
 - Static analysis (clang-tidy, cppcheck)
 - Code coverage tracking
 
----
+______________________________________________________________________
 
 ## Contact
 
 **Ilean Monterrubio Jr**
 
-Portfolio: [Your Portfolio Link]
-GitHub: [@yourusername](https://github.com/yourusername)
-LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+Portfolio: [link](https://ilean.me) | GitHub:
+[@ileanmjr88](https://github.com/ileanmjr88) | LinkedIn:
+[ilean-monterrubio-jr](https://linkedin.com/in/ilean-monterrubio-jr)
 
----
+______________________________________________________________________
 
 **wordNebula** - Where words flow freely, distractions fade away.

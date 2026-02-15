@@ -1,11 +1,15 @@
 #include "WNebulaView.hpp"
 #include "WNebulaPresenter.hpp"
+#include <memory>
+#include <ncurses.h>
+#include <spdlog/spdlog.h>
+#include <stdexcept>
+#include <string>
 
 namespace wnebula {
 
-WNebulaView::WNebulaView(std::shared_ptr<WNebulaPresenter> presenter) : presenter(presenter) {
-    this->presenter = std::weak_ptr<WNebulaPresenter>(presenter);
-    auto ptr = initscr();
+WNebulaView::WNebulaView(const std::shared_ptr<WNebulaPresenter> &presenter) : presenter(presenter) {
+    auto *ptr = initscr();
     if (ptr == nullptr) {
         spdlog::error("Failed to initialize ncurses");
         throw std::runtime_error("Failed to initialize ncurses");
