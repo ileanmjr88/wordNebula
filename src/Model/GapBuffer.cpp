@@ -1,5 +1,6 @@
 #include "Model/GapBuffer.hpp"
 #include <algorithm>
+#include <cctype>
 #include <cstddef>
 #include <spdlog/spdlog.h>
 #include <string>
@@ -8,7 +9,9 @@
 
 namespace wnebula {
 // Default Constructor
-GapBuffer::GapBuffer(size_t initialSize) : buffer(initialSize), gapStart(0), gapEnd(initialSize), cursor(0) { spdlog::info("GapBuffer created with initial size: {}", initialSize); }
+GapBuffer::GapBuffer(size_t initialSize) : buffer(std::max(initialSize, static_cast<size_t>(1))), gapStart(0), gapEnd(std::max(initialSize, static_cast<size_t>(1))), cursor(0) {
+    spdlog::info("GapBuffer created with initial size: {}", buffer.size());
+}
 
 // Text Operations
 void GapBuffer::insertChar(char c) {
@@ -26,7 +29,7 @@ void GapBuffer::insertChar(char c) {
 void GapBuffer::insertText(const std::string &text) {
     moveGapToCursor();
 
-    if (getGapSize() < text.size()) {
+    while (getGapSize() < text.size()) {
         expandGap();
     }
 
@@ -78,9 +81,13 @@ std::string GapBuffer::getText() const {
 }
 
 std::string GapBuffer::getTextRange(int start, int length) const {
+    if (start < 0 || length <= 0 || start >= getLength()) {
+        return "";
+    }
+    const int end = std::min(start + length, getLength());
     std::string result;
-    result.reserve(static_cast<size_t>(length));
-    for (int i = start; i < start + length && i < getLength(); i++) {
+    result.reserve(static_cast<size_t>(end - start));
+    for (int i = start; i < end; i++) {
         result += getCharAt(i);
     }
     return result;
@@ -198,7 +205,7 @@ size_t GapBuffer::getGapSize() const {
 
 void GapBuffer::expandGap() {
     // Resize the buffer
-    const size_t newSize = buffer.size() * 2;
+    const size_t newSize = std::max(buffer.size() * 2, static_cast<size_t>(1));
 
     std::vector<char> newBuffer(newSize);
     // Copy the text before the gap

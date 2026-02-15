@@ -1,5 +1,6 @@
 #include "Model/TextBuffer.hpp"
 #include <algorithm>
+#include <cctype>
 #include <spdlog/spdlog.h>
 
 namespace wnebula {

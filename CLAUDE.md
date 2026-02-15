@@ -330,26 +330,16 @@ ctest --test-dir build --output-on-failure
 
 Application logs are written to `logs/WordNebula.log` using spdlog.
 
-## Current Development Focus: GapBuffer Implementation
+## Current Development Focus
 
-The project is currently implementing GapBuffer as the primary buffer mechanism
-(see [include/Model/GapBuffer.hpp](include/Model/GapBuffer.hpp) and
-[src/Model/GapBuffer.cpp](src/Model/GapBuffer.cpp)).
-
-**Known Issues** (GapBuffer does not currently compile):
-
-- Missing implementation of `std::string getText() const` (required by IBuffer
-  interface)
-- Missing implementation of `int getCursorPosition() const` (required by IBuffer
-  interface)
-- Missing implementation of `void deleteText(int position, int length)`
-  (required by IBuffer interface)
-- Destructor implemented in .cpp but not declared in .hpp
-- Incomplete `moveGapToCursor()` implementation (right-moving logic doesn't
-  update gap pointers)
-- Default argument redefined in .cpp file (should only be in .hpp)
+GapBuffer is fully implemented as the primary buffer mechanism (see
+[include/Model/GapBuffer.hpp](include/Model/GapBuffer.hpp) and
+[src/Model/GapBuffer.cpp](src/Model/GapBuffer.cpp)). All IBuffer interface
+methods are implemented and tested.
 
 **Test Suite**: Comprehensive tests in
 [tests/test_GapBuffer.cpp](tests/test_GapBuffer.cpp)
+
+**Future Work**: Piece table implementation for advanced undo/redo support
 
 **Future Work**: Piece table implementation for advanced undo/redo support
