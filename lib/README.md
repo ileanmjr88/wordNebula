@@ -1,3 +1,0 @@
-# WordNebula Library
-
-tdb

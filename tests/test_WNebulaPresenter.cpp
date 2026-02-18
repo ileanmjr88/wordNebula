@@ -6,9 +6,9 @@
  * and verifying proper delegation to Model and View.
  */
 
-#include "WNebulaModel.hpp"
-#include "WNebulaPresenter.hpp"
-#include "WNebulaView.hpp"
+#include "Model/WNebulaModel.hpp"
+#include "Presenter/WNebulaPresenter.hpp"
+#include "View/WNebulaView.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>

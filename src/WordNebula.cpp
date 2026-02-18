@@ -5,9 +5,9 @@
 #include <iostream>
 #include <memory>
 
-#include "WNebulaModel.hpp"
-#include "WNebulaPresenter.hpp"
-#include "WNebulaView.hpp"
+#include "Model/WNebulaModel.hpp"
+#include "Presenter/WNebulaPresenter.hpp"
+#include "View/WNebulaView.hpp"
 
 using namespace wnebula;
 

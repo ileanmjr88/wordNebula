@@ -90,6 +90,7 @@ endif()
 # Find Dependencies
 # ============================================================================
 find_package(Curses REQUIRED)
+find_package(ftxui CONFIG REQUIRED)
 find_package(spdlog REQUIRED)
 
 # ============================================================================
@@ -111,7 +112,10 @@ set(WORDNEBULA_SOURCES
 # ============================================================================
 add_executable(wordNebula ${WORDNEBULA_SOURCES})
 
-target_link_libraries(wordNebula PRIVATE ${CURSES_LIBRARIES} spdlog::spdlog)
+target_link_libraries(
+  wordNebula PRIVATE ${CURSES_LIBRARIES} ftxui::screen ftxui::dom
+                     ftxui::component spdlog::spdlog
+)
 
 target_include_directories(wordNebula PRIVATE ${PROJECT_SOURCE_DIR}/include)
 

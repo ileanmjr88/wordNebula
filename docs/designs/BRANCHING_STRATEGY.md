@@ -165,7 +165,7 @@ ______________________________________________________________________
 
 ### Step 1: Navigate to Settings
 
-1. Go to your GitHub repository: `https://github.com/YOUR-USERNAME/wordNebula`
+1. Go to your GitHub repository: `https://github.com/ileanmjr88/wordNebula`
 1. Click **Settings** tab
 1. Click **Branches** in left sidebar
 

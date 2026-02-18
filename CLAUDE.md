@@ -234,7 +234,8 @@ All components are under the `wnebula` namespace.
 
 ### Core Libraries
 
-- **ncurses** - Terminal UI library
+- **FTXUI** - Modern C++ terminal UI library (functional/component-based)
+- **ncurses** - Traditional terminal UI library (fallback/alternative)
 - **spdlog** - Logging library
 
 ### Development Tools
@@ -254,6 +255,101 @@ Dependencies can be managed through:
 1. **System packages** (apt-get) - Configured in
    `.devcontainer/postCreateInstall.sh`
 1. **vcpkg** - C++ package manager (configured in `vcpkg.json`)
+
+## Platform Support
+
+### Target Platforms
+
+wordNebula is designed to work on **Linux and macOS** systems with modern
+terminal emulators. All dependencies are cross-platform and well-tested on
+Unix-like systems.
+
+| Platform    | Support Status    | Notes                                          |
+| ----------- | ----------------- | ---------------------------------------------- |
+| **Linux**   | ✅ Primary Target | Fully supported, developed and tested on Linux |
+| **macOS**   | ✅ Primary Target | Fully supported via vcpkg and native libraries |
+| **Windows** | 🔮 Future         | Possible with FTXUI-only build (no ncurses)    |
+
+### Platform-Specific Details
+
+#### Linux (Primary Development Platform)
+
+- **Terminal Emulators**: GNOME Terminal, Konsole, xterm, Alacritty, kitty, etc.
+- **Package Management**: vcpkg handles all dependencies
+- **Compiler**: Clang 16+ (default), GCC 12+ (alternative)
+- **Build System**: CMake 3.16+ with Ninja
+- **DevContainer**: Fully configured for Linux development
+
+#### macOS (Fully Supported)
+
+- **Terminal Emulators**: Terminal.app, iTerm2, Alacritty, kitty
+- **Package Management**: vcpkg (standalone or via Homebrew)
+- **Compiler**: Clang (system default via Xcode Command Line Tools)
+- **Native Libraries**: ncurses comes pre-installed on macOS
+- **Build Process**: Identical to Linux (CMake + vcpkg)
+
+**Building on macOS:**
+
+```bash
+# Install vcpkg (if not already installed)
+git clone https://github.com/Microsoft/vcpkg.git ~/vcpkg
+~/vcpkg/bootstrap-vcpkg.sh
+
+# Clone and build wordNebula
+git clone <repository-url> wordNebula
+cd wordNebula
+
+# Configure with vcpkg toolchain
+cmake -B build -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+# Build
+cmake --build build
+
+# Run
+./build/bin/wordNebula
+```
+
+#### Cross-Platform Compatibility
+
+All core dependencies are cross-platform:
+
+- ✅ **FTXUI** - Works on Linux, macOS, Windows
+- ✅ **spdlog** - Pure C++, works everywhere
+- ✅ **Google Test** - Cross-platform testing framework
+- ✅ **CMake + vcpkg** - Industry-standard cross-platform tools
+- ⚠️ **ncurses** - Linux/macOS native, requires PDCurses on Windows
+
+### Future Windows Support
+
+If Windows support is desired in the future:
+
+1. **Option A**: Use FTXUI exclusively (drop ncurses dependency)
+
+   - FTXUI works natively on Windows
+   - Simplifies codebase (single UI library)
+   - Maintains feature parity across all platforms
+
+1. **Option B**: Conditional compilation with PDCurses
+
+   - Keep ncurses for Linux/macOS
+   - Use PDCurses on Windows
+   - More complex build configuration
+
+**Recommendation**: Use FTXUI for new View implementation, which provides
+automatic Windows support if needed.
+
+### Terminal Feature Requirements
+
+wordNebula requires a terminal with:
+
+- **256-color support** (or better)
+- **Unicode/UTF-8** support
+- **Cursor positioning** and control sequences
+- **Keyboard input** with modifier keys (Ctrl, Alt)
+- **Terminal resize detection**
+
+All modern terminal emulators on Linux and macOS support these features.
 
 ## Development Environment
 

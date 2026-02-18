@@ -1,5 +1,5 @@
 /**
- * @file WNebulaPresenter.hpp
+ * @file Presenter/WNebulaPresenter.hpp
  * @brief Presenter layer for wordNebula MVP architecture
  */
 

@@ -1,6 +1,6 @@
-#include "WNebulaPresenter.hpp"
-#include "WNebulaModel.hpp"
-#include "WNebulaView.hpp"
+#include "Presenter/WNebulaPresenter.hpp"
+#include "Model/WNebulaModel.hpp"
+#include "View/WNebulaView.hpp"
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>

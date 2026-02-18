@@ -1,4 +1,4 @@
-#include "WNebulaModel.hpp"
+#include "Model/WNebulaModel.hpp"
 #include "Model/GapBuffer.hpp"
 #include "Model/IBuffer.hpp"
 #include <memory>
