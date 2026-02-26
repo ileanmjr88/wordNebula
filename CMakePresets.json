@@ -21,11 +21,11 @@
       }
     },
     {
-      "name": "fedora",
-      "displayName": "Native Linux (Fedora, Clang)",
+      "name": "linux",
+      "displayName": "Native Linux (Clang)",
       "inherits": "base",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
       }
