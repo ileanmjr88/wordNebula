@@ -354,31 +354,57 @@ ______________________________________________________________________
 
 ## Build & Run
 
-### Quick Start
+### Getting Started
 
-Use `CMakePresets.json` — no flags to remember, and deleting `build/` never
-loses installed packages (they live in `vcpkg_installed/` at the project root).
+#### Option A: DevContainer (Recommended — zero setup)
 
-**DevContainer (VS Code):**
+Open the repo in VS Code and select **"Reopen in Container"**. All tools,
+compilers, and dependencies are pre-installed. Then:
 
 ```bash
-cmake --preset devcontainer   # configure
-ninja -C build                # build
+cmake --preset devcontainer
+ninja -C build
 ctest --test-dir build --output-on-failure
 ./build/bin/wordNebula
 ```
 
-**Native Linux (Fedora, Clang):**
+#### Option B: Native Linux
 
-> If another cmake (e.g. STM32CubeCLT) appears first in your PATH, use
-> `/usr/bin/cmake` explicitly.
+**Prerequisites** — install via your package manager:
 
 ```bash
-/usr/bin/cmake --preset fedora         # configure
-ninja -C build                        # build
+# Debian/Ubuntu
+sudo apt-get install -y cmake ninja-build clang ccache git curl unzip
+
+# Fedora
+sudo dnf install -y cmake ninja-build clang ccache git curl unzip
+```
+
+**Install vcpkg** (one-time, any location):
+
+```bash
+git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+~/vcpkg/bootstrap-vcpkg.sh
+```
+
+**Set `VCPKG_ROOT`** — add to your `~/.zshrc` or `~/.bashrc`:
+
+```bash
+export VCPKG_ROOT=~/vcpkg
+export PATH=$VCPKG_ROOT:$PATH
+```
+
+Then reload your shell (`source ~/.zshrc`) and build:
+
+```bash
+cmake --preset linux
+ninja -C build
 ctest --test-dir build --output-on-failure
 ./build/bin/wordNebula
 ```
+
+> **Note:** If another cmake (e.g. STM32CubeCLT) appears first in your PATH, use
+> `/usr/bin/cmake --preset linux` explicitly.
 
 ### Build Options
 
@@ -467,17 +493,16 @@ VS Code with the Remote-Containers extension:
 
 ### Manual Installation (Ubuntu/Debian)
 
+System tools only — project dependencies (ftxui, spdlog, gtest) are managed by
+vcpkg:
+
 ```bash
 sudo apt-get update && sudo apt-get install -y \
     build-essential \
     cmake \
     ninja-build \
     clang-16 \
-    libncurses5-dev \
-    libncursesw5-dev \
-    libspdlog-dev \
-    libgtest-dev \
-    libgmock-dev \
+    ccache \
     clang-tidy \
     cppcheck \
     lcov \
