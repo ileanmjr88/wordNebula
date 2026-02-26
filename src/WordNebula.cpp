@@ -7,7 +7,7 @@
 
 #include "Model/WNebulaModel.hpp"
 #include "Presenter/WNebulaPresenter.hpp"
-#include "View/WNebulaView.hpp"
+#include "View/FtxuiView.hpp"
 
 using namespace wnebula;
 
@@ -24,7 +24,7 @@ int main() {
         spdlog::info("Starting Word Nebula");
         const auto presenter = std::make_shared<WNebulaPresenter>();
         const auto model = std::make_shared<WNebulaModel>();
-        const auto view = std::make_shared<WNebulaView>(presenter);
+        const auto view = std::make_shared<FtxuiView>();
         presenter->setup(view, model);
         presenter->run();
     } catch (const spdlog::spdlog_ex &ex) {

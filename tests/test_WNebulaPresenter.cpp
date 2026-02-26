@@ -8,7 +8,7 @@
 
 #include "Model/WNebulaModel.hpp"
 #include "Presenter/WNebulaPresenter.hpp"
-#include "View/WNebulaView.hpp"
+#include "View/IView.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>
@@ -16,29 +16,35 @@
 using namespace wnebula;
 
 // ============================================================================
-// MockView - Test double that doesn't require ncurses
+// MockView - Test double implementing IView directly (no ncurses)
 // ============================================================================
 
-class MockView : public WNebulaView {
+class MockView : public IView {
   public:
-    explicit MockView(const std::shared_ptr<WNebulaPresenter> &presenter)
-        : WNebulaView(presenter, false) {} // Skip ncurses init for testing
+    // run() saves the callback but returns immediately (non-blocking for tests)
+    void run(std::function<void(const InputEvent &)> onInput) override { inputCallback = std::move(onInput); }
 
-    // Override to avoid ncurses calls
-    void render(const std::string &text, int cursorPosition) {
-        lastRenderedText = text;
-        lastCursorPosition = cursorPosition;
+    void render(const ViewState &state) override {
+        lastState = state;
         renderCallCount++;
     }
 
-    void processInput() {
-        // No-op for testing
+    void exit() override { exitCalled = true; }
+
+    [[nodiscard]] std::pair<int, int> getTerminalSize() const override { return {80, 24}; }
+
+    void showMessage(const std::string &message, bool isError = false) override {
+        lastMessage = message;
+        lastMessageIsError = isError;
     }
 
-    // Test inspection methods
-    std::string lastRenderedText;
-    int lastCursorPosition = 0;
+    // Test inspection fields
+    ViewState lastState;
     int renderCallCount = 0;
+    bool exitCalled = false;
+    std::string lastMessage;
+    bool lastMessageIsError = false;
+    std::function<void(const InputEvent &)> inputCallback;
 };
 
 // ============================================================================
@@ -50,7 +56,7 @@ class WNebulaPresenterTest : public ::testing::Test {
     void SetUp() override {
         presenter = std::make_shared<WNebulaPresenter>();
         model = std::make_shared<WNebulaModel>();
-        view = std::make_shared<MockView>(presenter);
+        view = std::make_shared<MockView>();
 
         // Wire up the components (THIS IS CRITICAL!)
         presenter->setup(view, model);
@@ -149,8 +155,8 @@ TEST_F(WNebulaPresenterTest, OnInsertTriggersRender) {
     presenter->onInsert('X');
 
     EXPECT_EQ(view->renderCallCount, 1);
-    EXPECT_EQ(view->lastRenderedText, "X");
-    EXPECT_EQ(view->lastCursorPosition, 1);
+    EXPECT_EQ(view->lastState.visibleText, "X");
+    EXPECT_EQ(view->lastState.cursorPosition, 1);
 }
 
 TEST_F(WNebulaPresenterTest, OnDeleteDelegatesToModel) {
@@ -170,7 +176,7 @@ TEST_F(WNebulaPresenterTest, OnDeleteTriggersRender) {
     presenter->onDelete();
 
     EXPECT_EQ(view->renderCallCount, 1);
-    EXPECT_EQ(view->lastRenderedText, "");
+    EXPECT_EQ(view->lastState.visibleText, "");
 }
 
 TEST_F(WNebulaPresenterTest, OnDeleteForwardDelegatesToModel) {
@@ -317,7 +323,7 @@ TEST_F(WNebulaPresenterTest, NavigationTriggersRender) {
     presenter->onMoveCursorLeft();
 
     EXPECT_EQ(view->renderCallCount, 1);
-    EXPECT_EQ(view->lastCursorPosition, 1);
+    EXPECT_EQ(view->lastState.cursorPosition, 1);
 }
 
 // ============================================================================

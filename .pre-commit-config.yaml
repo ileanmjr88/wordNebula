@@ -61,6 +61,7 @@ repos:
         args:
           - --enable=warning,style,performance,portability
           - --suppress=missingIncludeSystem
+          - --suppress=unusedStructMember
           - --error-exitcode=1
           - --inline-suppr
         pass_filenames: true

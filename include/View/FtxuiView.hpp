@@ -130,6 +130,17 @@ class FtxuiView : public IView {
     ftxui::Element renderStatusBar();
 
     /**
+     * @brief Render temporary status message bar
+     *
+     * Displays temporary messages at the top of the screen,
+     * such as save confirmations or error warnings.
+     * Styled differently for errors vs informational messages.
+     *
+     * @return FTXUI Element representing the status message bar
+     */
+    ftxui::Element renderStatusMessage();
+
+    /**
      * @brief Render help overlay
      *
      * Shows keyboard shortcuts when ViewState.showHelp is true.
@@ -149,21 +160,18 @@ class FtxuiView : public IView {
     InputEvent translateEvent(const ftxui::Event &event);
 
     // FTXUI screen and components
-    ftxui::ScreenInteractive screen_;
-    ftxui::Component mainComponent_;
+    ftxui::ScreenInteractive screen;
+    ftxui::Component mainComponent;
 
     // Current state (updated via render())
-    ViewState currentState_;
+    ViewState currentState{};
 
     // Input callback (set via run())
-    std::function<void(const InputEvent &)> inputCallback_;
-
-    // Flag to trigger exit
-    bool shouldExit_ = false;
+    std::function<void(const InputEvent &)> inputCallback;
 
     // Temporary status message (from showMessage())
-    std::string temporaryMessage_;
-    bool temporaryMessageIsError_ = false;
+    std::string temporaryMessage;
+    bool temporaryMessageIsError = false;
 };
 
 } // namespace wnebula

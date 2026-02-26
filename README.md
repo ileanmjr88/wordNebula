@@ -356,49 +356,49 @@ ______________________________________________________________________
 
 ### Quick Start
 
+Use `CMakePresets.json` — no flags to remember, and deleting `build/` never
+loses installed packages (they live in `vcpkg_installed/` at the project root).
+
+**DevContainer (VS Code):**
+
 ```bash
-# Configure build
-cmake -B build -G Ninja
-
-# Build project
-cmake --build build
-
-# Run tests
+cmake --preset devcontainer   # configure
+ninja -C build                # build
 ctest --test-dir build --output-on-failure
+./build/bin/wordNebula
+```
 
-# Run application
+**Native Linux (Fedora, Clang):**
+
+> If another cmake (e.g. STM32CubeCLT) appears first in your PATH, use
+> `/usr/bin/cmake` explicitly.
+
+```bash
+/usr/bin/cmake --preset fedora         # configure
+ninja -C build                        # build
+ctest --test-dir build --output-on-failure
 ./build/bin/wordNebula
 ```
 
 ### Build Options
 
 ```bash
-# Enable all code quality checks
-cmake -B build -G Ninja \
-  -DBUILD_TESTING=ON \
+# Enable code quality checks (append to preset configure step)
+cmake --preset devcontainer \
   -DENABLE_COVERAGE=ON \
   -DENABLE_SANITIZERS=ON \
   -DENABLE_CLANG_TIDY=ON
-
-# Build with specific compiler
-cmake -B build -G Ninja \
-  -DCMAKE_CXX_COMPILER=clang++ \
-  -DCMAKE_C_COMPILER=clang
 ```
 
 ### Development Tools
 
 ```bash
 # Format code (automatic via pre-commit hooks)
-cmake --build build --target format
-
-# Run static analysis
-cmake -B build -DENABLE_CLANG_TIDY=ON
-cmake --build build
+ninja -C build format
 
 # Generate code coverage
-cmake -B build -DENABLE_COVERAGE=ON
-cmake --build build --target coverage
+cmake --preset devcontainer -DENABLE_COVERAGE=ON
+ninja -C build coverage
 # View: build/coverage/index.html
 
 # Run with memory checking
@@ -437,7 +437,7 @@ ______________________________________________________________________
 
 ### Core Libraries
 
-- **ncurses** - Terminal UI rendering
+- **FTXUI** - Modern C++ terminal UI library (functional/component-based)
 - **spdlog** - Structured logging
 
 ### Development Tools
@@ -533,16 +533,22 @@ wordNebula/
 │   ├── Model/                  # Buffer implementations
 │   │   ├── TextBuffer.cpp      # Simple string-based buffer
 │   │   └── GapBuffer.cpp       # Gap buffer (in development)
-│   ├── View/                   # ncurses UI
-│   │   └── WNebulaView.cpp
+│   ├── View/                   # FTXUI-based UI
+│   │   └── FtxuiView.cpp
 │   ├── Presenter/              # Business logic
 │   │   └── WNebulaPresenter.cpp
 │   └── WordNebula.cpp          # Main entry point
 ├── include/                    # Header files
-│   └── Model/
-│       ├── IBuffer.hpp         # Buffer interface
-│       ├── TextBuffer.hpp
-│       └── GapBuffer.hpp
+│   ├── Model/
+│   │   ├── IBuffer.hpp         # Buffer interface
+│   │   ├── TextBuffer.hpp
+│   │   └── GapBuffer.hpp
+│   ├── View/
+│   │   ├── IView.hpp           # View interface
+│   │   ├── FtxuiView.hpp
+│   │   └── KeyboardShorcuts.hpp
+│   └── Presenter/
+│       └── WNebulaPresenter.hpp
 ├── tests/                      # Unit tests
 │   ├── test_TextBuffer.cpp
 │   └── test_GapBuffer.cpp

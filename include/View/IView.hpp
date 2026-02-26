@@ -82,7 +82,9 @@ struct InputEvent {
         CTRL_O, // Open
         CTRL_Q, // Quit
         CTRL_W, // Close
-        CTRL_H, // Help
+
+        // Function keys
+        F1, // Help
 
         // Other
         ESCAPE,

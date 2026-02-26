@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc-12 \
     g++-12 \
     clang-16 \
+    clangd-16 \
     clang-format-16 \
     clang-tidy-16 \
     llvm-16 \
@@ -61,6 +62,7 @@ RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-16 100 && 
     update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-16 100 && \
     update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-16 100 && \
     update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-16 100 && \
+    update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-16 100 && \
     update-alternatives --install /usr/bin/lldb lldb /usr/bin/lldb-16 100
 
 # Configure locale
@@ -181,7 +183,6 @@ RUN echo 'export VCPKG_ROOT=/opt/vcpkg' >> ~/.zshrc && \
     echo 'export PATH=$VCPKG_ROOT:$PATH' >> ~/.zshrc && \
     echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.zshrc && \
     echo 'export CCACHE_DIR=/workspace/.ccache' >> ~/.zshrc && \
-    echo 'alias cmake="cmake -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"' >> ~/.zshrc && \
     echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 
 # Create Starship config
@@ -230,6 +231,9 @@ USER root
 # Set up workspace directory
 RUN mkdir -p /workspace && \
     chown -R $USERNAME:$USERNAME /workspace
+
+# Give the dev user write access to vcpkg so manifest-mode installs work
+RUN chown -R $USERNAME:$USERNAME /opt/vcpkg
 
 # Environment variables - Use Clang as default compiler
 ENV CC=clang

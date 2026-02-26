@@ -102,8 +102,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include ${CURSES_INCLUDE_DIR})
 # Source Files
 # ============================================================================
 set(WORDNEBULA_SOURCES
-    src/Model/TextBuffer.cpp src/Model/GapBuffer.cpp src/Model/WNebulaModel.cpp
-    src/View/WNebulaView.cpp src/Presenter/WNebulaPresenter.cpp
+    src/Model/TextBuffer.cpp
+    src/Model/GapBuffer.cpp
+    src/Model/WNebulaModel.cpp
+    src/View/WNebulaView.cpp
+    src/View/FtxuiView.cpp
+    src/Presenter/WNebulaPresenter.cpp
     src/WordNebula.cpp
 )
 
