@@ -9,53 +9,45 @@
             "USER_GID": "1000"
         }
     },
-
     // Post-create command (minimal - just set up git hooks)
     "postCreateCommand": "pre-commit install --install-hooks || true",
-
     // Configure tool-specific properties
     "customizations": {
         "vscode": {
             "extensions": [
-                // Code Quality & Formatting
                 "aaron-bond.better-comments",
                 "oderwat.indent-rainbow",
                 "xaver.clang-format",
                 "notskm.clang-tidy",
                 "cschlosser.doxdocgen",
-
-                // C++ Development
-                "ms-vscode.cpptools-extension-pack",
-                "ms-vscode.cpptools",
+                "llvm-vs-code-extensions.vscode-clangd",
                 "ms-vscode.cmake-tools",
                 "twxs.cmake",
                 "jeff-hykin.better-cpp-syntax",
-
-                // Testing & Debugging
                 "matepek.vscode-catch2-test-adapter",
                 "hbenl.vscode-test-explorer",
-
-                // Git & GitHub
                 "github.vscode-github-actions",
                 "GitHub.copilot",
                 "GitHub.copilot-chat",
                 "eamodio.gitlens",
-
-                // UI & Productivity
                 "albert.TabOut",
                 "vscode-icons-team.vscode-icons",
+                "PKief.material-icon-theme",
+                "miguelsolorio.fluent-icons",
                 "astro-build.houston",
-
-                // Documentation
                 "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
                 "bierner.markdown-mermaid",
-                "yzhang.markdown-all-in-one"
+                "yzhang.markdown-all-in-one",
+                "Anthropic.claude-code"
             ],
             "settings": {
+                // Disable Microsoft C/C++ IntelliSense to avoid LSP clash
+                "C_Cpp.intelliSenseEngine": "Disabled",
                 "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
                 "C_Cpp.codeAnalysis.clangTidy.enabled": true,
                 "C_Cpp.codeAnalysis.clangTidy.runAutomatically": true,
-                "C_Cpp.intelliSenseEngine": "default",
+                // Use clangd as the language server
+                "clangd.path": "/usr/bin/clangd",
                 "C_Cpp.default.compilerPath": "/usr/bin/clang++",
                 "C_Cpp.default.cppStandard": "c++20",
                 "C_Cpp.default.intelliSenseMode": "linux-clang-arm64",
@@ -78,7 +70,6 @@
             }
         }
     },
-
     // Mounts for performance and persistence
     "mounts": [
         // Cache mount for ccache
@@ -86,7 +77,6 @@
         // Cache mount for vcpkg
         "source=wordnebula-vcpkg-cache,target=/opt/vcpkg/downloads,type=volume"
     ],
-
     // Features for additional functionality
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
@@ -95,7 +85,6 @@
             "upgradePackages": false
         }
     },
-
     // Container environment variables
     "containerEnv": {
         "VCPKG_ROOT": "/opt/vcpkg",
@@ -103,23 +92,23 @@
         "CC": "clang",
         "CXX": "clang++"
     },
-
     // Forward ports if needed
     "forwardPorts": [],
-
+    // Disable VS Code's automatic port detection and forwarding entirely
+    "autoForwardPorts": false,
+    // Disable auto-forwarding of ephemeral ports (belt-and-suspenders)
+    "otherPortsAttributes": {
+        "onAutoForward": "ignore"
+    },
     // Run as non-root user
     "remoteUser": "vscode",
-
     // Container user
     "containerUser": "vscode",
-
     // Update remote user UID/GID to match local user (helps with permissions)
     "updateRemoteUserUID": true,
-
     // Lifecycle scripts
     "onCreateCommand": "echo '🚀 wordNebula development container created!'",
     "updateContentCommand": "echo '📦 Content updated'",
-
     // Shutdown action
     "shutdownAction": "stopContainer"
 }

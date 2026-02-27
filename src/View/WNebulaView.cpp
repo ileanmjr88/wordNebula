@@ -1,22 +1,37 @@
-#include "WNebulaView.hpp"
-#include "WNebulaPresenter.hpp"
+#include "View/WNebulaView.hpp"
+#include "Presenter/WNebulaPresenter.hpp"
+#include <memory>
+#include <ncurses.h>
+#include <spdlog/spdlog.h>
+#include <stdexcept>
+#include <string>
 
 namespace wnebula {
 
-WNebulaView::WNebulaView(std::shared_ptr<WNebulaPresenter> presenter) : presenter(presenter) {
-    this->presenter = std::weak_ptr<WNebulaPresenter>(presenter);
-    auto ptr = initscr();
-    if (ptr == nullptr) {
-        spdlog::error("Failed to initialize ncurses");
-        throw std::runtime_error("Failed to initialize ncurses");
+WNebulaView::WNebulaView(const std::shared_ptr<WNebulaPresenter> &presenter) : WNebulaView(presenter, true) {}
+
+// Protected constructor for testing - allows skipping ncurses init
+WNebulaView::WNebulaView(const std::shared_ptr<WNebulaPresenter> &presenter, bool initNcurses) : presenter(presenter) {
+    if (initNcurses) {
+        auto *ptr = initscr();
+        if (ptr == nullptr) {
+            spdlog::error("Failed to initialize ncurses");
+            throw std::runtime_error("Failed to initialize ncurses");
+        }
+        echo();
+        keypad(stdscr, TRUE);
+        spdlog::info("WNebulaView initialized");
+    } else {
+        spdlog::info("WNebulaView initialized (test mode - ncurses skipped)");
     }
-    echo();
-    keypad(stdscr, TRUE);
-    spdlog::info("WNebulaView initialized");
 }
 
 WNebulaView::~WNebulaView() {
-    endwin();
+    // Only call endwin() if ncurses was initialized
+    // In test mode, stdscr might be nullptr
+    if (stdscr != nullptr) {
+        endwin();
+    }
     spdlog::default_logger()->flush();
 }
 

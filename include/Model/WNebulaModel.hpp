@@ -1,14 +1,16 @@
 #pragma once
 
 #include "Model/IBuffer.hpp"
+#include <memory>
 #include <string>
 
 namespace wnebula {
 
-class TextBuffer : public IBuffer {
+class WNebulaModel : public IBuffer {
   public:
-    TextBuffer();
-    ~TextBuffer() override = default;
+    WNebulaModel();
+    explicit WNebulaModel(std::shared_ptr<IBuffer> buf);
+    ~WNebulaModel() override = default;
 
     // Text Operations
     void insertChar(char c) override;
@@ -38,8 +40,7 @@ class TextBuffer : public IBuffer {
     [[nodiscard]] int getParagraphCount() const override;
 
   private:
-    std::string buffer;
-    int currentCursor = 0;
+    std::shared_ptr<IBuffer> buffer;
 };
 
 } // namespace wnebula

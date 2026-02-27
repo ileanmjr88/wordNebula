@@ -8,6 +8,8 @@ on:
 
 env:
   BUILD_TYPE: Debug
+  CC: clang
+  CXX: clang++
 
 jobs:
   build-and-test:
@@ -17,27 +19,34 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Dependencies
+    - name: Install build tools
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           cmake \
           ninja-build \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libspdlog-dev \
-          libgtest-dev \
-          libgmock-dev \
+          clang \
+          llvm \
           clang-tidy \
           cppcheck \
           lcov \
           gcovr
+
+    - name: Cache vcpkg packages
+      uses: actions/cache@v4
+      with:
+        path: vcpkg_installed
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-
 
     - name: Configure CMake
       run: |
         cmake -B build \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+          -DVCPKG_INSTALLED_DIR=${{github.workspace}}/vcpkg_installed \
           -DBUILD_TESTING=ON \
           -DENABLE_COVERAGE=ON
 
@@ -52,9 +61,15 @@ jobs:
       if: success()
       working-directory: build
       run: |
-        lcov --directory . --capture --output-file coverage.info
-        lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
-        lcov --list coverage.info
+        printf '#!/bin/sh\nexec llvm-cov gcov "$@"\n' > /tmp/llvm-gcov.sh
+        chmod +x /tmp/llvm-gcov.sh
+        lcov --directory . --capture --output-file coverage.info \
+          --gcov-tool /tmp/llvm-gcov.sh \
+          --ignore-errors mismatch,inconsistent
+        lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info \
+          --ignore-errors mismatch,inconsistent
+        lcov --list coverage.info \
+          --ignore-errors mismatch,inconsistent
 
     - name: Upload Coverage to Codecov
       if: success()
@@ -70,21 +85,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Dependencies
+    - name: Install build tools
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           cmake \
           ninja-build \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libspdlog-dev \
+          clang \
           clang-tidy \
           cppcheck
 
+    - name: Cache vcpkg packages
+      uses: actions/cache@v4
+      with:
+        path: vcpkg_installed
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-
+
     - name: Run clang-tidy
       run: |
-        cmake -B build -G Ninja -DENABLE_CLANG_TIDY=ON
+        cmake -B build -G Ninja \
+          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+          -DVCPKG_INSTALLED_DIR=${{github.workspace}}/vcpkg_installed \
+          -DENABLE_CLANG_TIDY=ON \
+          -DBUILD_TESTING=OFF
         cmake --build build 2>&1 | tee clang-tidy-output.txt
       continue-on-error: true
 
@@ -126,23 +151,29 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Dependencies
+    - name: Install build tools
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           cmake \
           ninja-build \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libspdlog-dev \
-          libgtest-dev \
-          libgmock-dev
+          clang
+
+    - name: Cache vcpkg packages
+      uses: actions/cache@v4
+      with:
+        path: vcpkg_installed
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-
 
     - name: Configure CMake with Sanitizers
       run: |
         cmake -B build \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+          -DVCPKG_INSTALLED_DIR=${{github.workspace}}/vcpkg_installed \
           -DBUILD_TESTING=ON \
           -DENABLE_SANITIZERS=ON
 

@@ -1,2 +1,0 @@
-# WordNebula Include
-tdb
