@@ -1,7 +1,7 @@
 # View Implementation Design
 
-**Version**: 1.0 **Last Updated**: 2026-02-16 **Status**: In Progress - Header
-Complete, Implementation Pending
+**Version**: 1.0 **Last Updated**: 2026-02-16 **Status**: Implemented –
+Historical design snapshot; implementation complete in `src/View/FtxuiView.cpp`
 
 ______________________________________________________________________
 
@@ -346,17 +346,17 @@ class FtxuiView : public IView {
    - Map keyboard shortcuts (Ctrl+S, Ctrl+Q, etc.)
    - Handle special keys (arrows, Page Up/Down, etc.)
 
-### Status: Implementation Pending
+### Status: Implemented ✅
 
-**Next Steps:**
+All steps below were completed in `src/View/FtxuiView.cpp`:
 
-1. Create `src/View/FtxuiView.cpp`
-1. Implement constructor (initialize screen)
-1. Implement `getTerminalSize()` (simple)
-1. Implement event loop (`run()`)
-1. Implement rendering methods
-1. Implement event translation
-1. Test with minimal Presenter integration
+1. ~~Create `src/View/FtxuiView.cpp`~~
+1. ~~Implement constructor (initialize screen)~~
+1. ~~Implement `getTerminalSize()` (simple)~~
+1. ~~Implement event loop (`run()`)~~
+1. ~~Implement rendering methods~~
+1. ~~Implement event translation~~
+1. ~~Test with minimal Presenter integration~~
 
 **User will code this with guidance/hints** (learning experience)
 

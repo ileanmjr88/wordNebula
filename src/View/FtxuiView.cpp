@@ -1,5 +1,5 @@
 #include "View/FtxuiView.hpp"
-#include "View/KeyboardShorcuts.hpp"
+#include "View/KeyboardShortcuts.hpp"
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>

@@ -1,7 +1,7 @@
 # View Implementation Progress (FtxuiView)
 
-**Created**: 2026-02-25 **Branch**: `phase1/view` **Status**: First compile
-successful, needs testing and refinements
+**Created**: 2026-02-25 **Branch**: `phase1/view` **Status**: Implemented and
+tested — merged to `develop` via `phase1/test`
 
 ______________________________________________________________________
 
@@ -12,8 +12,8 @@ ______________________________________________________________________
 - **`src/View/FtxuiView.cpp`** - Full implementation of the FTXUI-based View
 - **`include/View/FtxuiView.hpp`** - Added `renderStatusMessage()` declaration
   with Doxygen docs
-- **`include/View/KeyboardShorcuts.hpp`** - Static shortcut definitions for help
-  overlay
+- **`include/View/KeyboardShortcuts.hpp`** - Static shortcut definitions for
+  help overlay
 - **`CMakeLists.txt`** - Added `src/View/FtxuiView.cpp` to `WORDNEBULA_SOURCES`
 
 ### Implemented Methods
@@ -24,7 +24,7 @@ ______________________________________________________________________
 | `~FtxuiView()`          | Done   | `= default`                                        |
 | `run()`                 | Done   | Stores callback, creates component, calls `Loop`   |
 | `render()`              | Done   | Saves state, posts Custom event to trigger redraw  |
-| `exit()`                | WIP    | Currently sets `shouldExit = true` - see below     |
+| `exit()`                | Done   | Calls `screen.Exit()` directly                     |
 | `getTerminalSize()`     | Done   | Uses `ftxui::Terminal::Size()`                     |
 | `showMessage()`         | Done   | Sets temporary message, triggers redraw            |
 | `createMainComponent()` | Done   | Renderer + CatchEvent with dbox for help overlay   |
@@ -53,53 +53,28 @@ ______________________________________________________________________
 
 ______________________________________________________________________
 
-## Open Issue: Exit Flow
+## Exit Flow (Resolved)
 
-### Current State
-
-`exit()` sets `shouldExit = true` but does NOT call `screen.Exit()`. This means
-**the app won't actually quit** because FTXUI's `Loop()` doesn't check our flag.
-
-### The Problem
-
-`screen.Exit()` terminates the FTXUI loop and restores the terminal immediately.
-But we need to show warnings (like "unsaved changes") BEFORE exiting.
-
-### Proposed Solution: Double-Press-to-Quit Pattern
-
-The fix belongs in the **Presenter**, not the View. The View's `exit()` should
-simply call `screen.Exit()`. The Presenter controls the decision:
+`exit()` calls `screen.Exit()` directly. The double-press-to-quit logic lives
+entirely in the Presenter (`WNebulaPresenter::onExit()`), keeping the View
+passive as intended by MVP:
 
 ```cpp
-// In WNebulaPresenter:
+// WNebulaPresenter::onExit() — Presenter decides when to exit
 void WNebulaPresenter::onExit() {
     if (isDirty && !exitWarningShown) {
-        // First Ctrl+Q with unsaved changes: show warning, don't exit
         exitWarningShown = true;
         if (auto v = view.lock()) {
             v->showMessage("Unsaved changes! Press Ctrl+Q again to quit.", true);
         }
-        return;  // don't exit yet
+        return;
     }
-    // Second Ctrl+Q (or no unsaved changes): actually exit
     isRunning = false;
     if (auto v = view.lock()) { v->exit(); }
 }
 ```
 
-This requires:
-
-1. Adding `bool exitWarningShown = false;` to `WNebulaPresenter`
-1. Resetting `exitWarningShown = false` on any other input (so warning
-   dismisses)
-1. Changing `FtxuiView::exit()` to call `screen.Exit()` instead of
-   `shouldExit = true`
-1. Removing `shouldExit` from `FtxuiView.hpp` (unused)
-
-### Key Insight
-
-The View is "passive" in MVP - it doesn't make decisions about when to exit. It
-just provides the mechanism (`screen.Exit()`). The Presenter decides when.
+`exitWarningShown` is reset by `handleInput()` on any non-exit event.
 
 ______________________________________________________________________
 
@@ -107,39 +82,33 @@ ______________________________________________________________________
 
 ### CMake Configure Command
 
+Use the `devcontainer` preset (vcpkg toolchain is set automatically):
+
 ```bash
-cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake --preset devcontainer
+ninja -C build
 ```
 
-**Important**: Must pass the vcpkg toolchain file or FTXUI won't be found.
-Running `cmake ..` from inside `build/` without the toolchain file will fail.
+For coverage (GCC required — Clang's profiling runtime not installed):
 
-### Compiler Warnings to Fix
-
-1. **Sign conversion** in `renderEditor()` line 74: `cursorPosition` is `int`,
-   assigned to `size_t`. Fix with `static_cast<size_t>()`.
-
-1. **Unused private field** `shouldExit` in header - remove after implementing
-   the exit flow fix above.
+```bash
+cmake --preset coverage
+ninja -C build-coverage coverage
+```
 
 ______________________________________________________________________
 
-## What's Left Before Phase 1 MVP Is Complete
+## What's Left (Deferred to Later Phases)
 
-### Must Do
-
-- [ ] Fix `exit()` to call `screen.Exit()` and implement double-press-to-quit in
-  Presenter
-- [ ] Fix compiler warnings (sign conversion, unused field)
-- [ ] Test the app end-to-end (type text, navigate, quit)
-- [ ] Implement file I/O in Presenter (`saveFile()` / `loadFile()` are stubs)
-
-### Nice to Have (Can Defer)
+### Known Limitations
 
 - [ ] Word wrapping in `renderEditor()` (currently single-line hbox)
 - [ ] Newline handling in `renderEditor()` (need to split on `\n` and use vbox)
 - [ ] Viewport scrolling for long documents
+- [ ] Line-aware Up/Down arrow navigation (currently delegates to paragraph
+  jump)
 - [ ] Auto-dismiss temporary messages after timeout
+- [ ] File I/O in Presenter (`saveFile()` / `loadFile()` are stubs)
 
 ______________________________________________________________________
 

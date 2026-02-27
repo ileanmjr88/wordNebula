@@ -22,16 +22,17 @@ namespace wnebula {
  *
  * This view provides a modern terminal UI with:
  * - Cyan background cursor (optimized for dark terminals)
- * - Word-wrapped text display
  * - Status bar with file info and statistics
  * - Keyboard event handling
- * - Fixed viewport (vim-style scrolling)
  *
  * Implementation Strategy:
  * - Uses FTXUI's Component system for rendering
  * - Cursor rendered as character with cyan background
  * - Input events translated from FTXUI events to InputEvent
  * - State-based rendering (full re-render on state change)
+ *
+ * @note Word-wrapping and viewport scrolling are not yet implemented.
+ *       The editor area renders all text in a single hbox row (TODO).
  */
 class FtxuiView : public IView {
   public:
@@ -121,7 +122,8 @@ class FtxuiView : public IView {
      * - Character at cursor (cyan background, black text)
      * - Text after cursor (normal styling)
      *
-     * Handles word wrapping to terminal width.
+     * @note Currently renders as a single hbox with no word-wrapping or
+     *       viewport scrolling (TODO).
      *
      * @return FTXUI Element representing the editor area
      */
@@ -131,8 +133,7 @@ class FtxuiView : public IView {
      * @brief Render the status bar
      *
      * Displays:
-     * - Filename (or "Untitled")
-     * - Dirty indicator (*)
+     * - Filename (or "Untitled"), prefixed with "~ " when dirty
      * - Word count
      *
      * @return FTXUI Element representing the status bar

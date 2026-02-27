@@ -422,10 +422,10 @@ cmake --preset devcontainer \
 # Format code (automatic via pre-commit hooks)
 ninja -C build format
 
-# Generate code coverage
-cmake --preset devcontainer -DENABLE_COVERAGE=ON
-ninja -C build coverage
-# View: build/coverage/index.html
+# Generate code coverage (uses GCC 12; outputs to build-coverage/)
+cmake --preset coverage
+ninja -C build-coverage coverage
+# View: build-coverage/coverage/index.html
 
 # Run with memory checking
 valgrind --leak-check=full ./build/bin/wordNebula
@@ -571,7 +571,7 @@ wordNebula/
 │   ├── View/
 │   │   ├── IView.hpp           # View interface
 │   │   ├── FtxuiView.hpp
-│   │   └── KeyboardShorcuts.hpp
+│   │   └── KeyboardShortcuts.hpp
 │   └── Presenter/
 │       └── WNebulaPresenter.hpp
 ├── tests/                      # Unit tests

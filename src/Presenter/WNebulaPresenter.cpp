@@ -64,6 +64,12 @@ void WNebulaPresenter::handleInput(const InputEvent &event) {
     case InputEvent::Type::ARROW_RIGHT:
         onMoveCursorRight();
         break;
+    case InputEvent::Type::ARROW_UP:
+        onCtrlUp(); // TODO: replace with line-aware navigation
+        break;
+    case InputEvent::Type::ARROW_DOWN:
+        onCtrlDown(); // TODO: replace with line-aware navigation
+        break;
     case InputEvent::Type::CTRL_LEFT:
         onCtrlLeft();
         break;
@@ -84,6 +90,17 @@ void WNebulaPresenter::handleInput(const InputEvent &event) {
         break;
     case InputEvent::Type::CTRL_S:
         saveFile(currentFilePath);
+        break;
+    case InputEvent::Type::CTRL_O:
+        if (auto v = view.lock()) {
+            v->showMessage("Open: not yet implemented");
+        }
+        break;
+    case InputEvent::Type::PAGE_UP: // fall through
+    case InputEvent::Type::PAGE_DOWN:
+        if (auto v = view.lock()) {
+            v->showMessage("Page navigation: not yet implemented");
+        }
         break;
     case InputEvent::Type::F1:
         onToggleHelp();
