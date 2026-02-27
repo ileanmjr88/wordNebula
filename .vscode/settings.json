@@ -5,6 +5,8 @@
     "files.autoSave": "afterDelay",
     "editor.renderWhitespace": "all",
     "terminal.integrated.defaultProfile.linux": "zsh",
+    "editor.fontSize": 16,
+    "chat.fontSize": 16,
     "cmake.configureOnOpen": false,
     "cmake.pinnedCommands": [
         "workbench.action.tasks.configureTaskRunner",

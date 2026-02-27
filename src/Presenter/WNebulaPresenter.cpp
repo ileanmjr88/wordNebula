@@ -1,6 +1,6 @@
-#include "WNebulaPresenter.hpp"
-#include "WNebulaModel.hpp"
-#include "WNebulaView.hpp"
+#include "Presenter/WNebulaPresenter.hpp"
+#include "Model/WNebulaModel.hpp"
+#include "View/IView.hpp"
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
@@ -9,7 +9,7 @@ namespace wnebula {
 
 WNebulaPresenter::WNebulaPresenter() { spdlog::info("WNebulaPresenter created"); }
 
-void WNebulaPresenter::setup(const std::shared_ptr<WNebulaView> &newView, std::shared_ptr<WNebulaModel> newModel) {
+void WNebulaPresenter::setup(const std::shared_ptr<IView> &newView, std::shared_ptr<WNebulaModel> newModel) {
     view = newView;
     model = std::move(newModel);
     spdlog::info("View set for presenter");
@@ -18,7 +18,7 @@ void WNebulaPresenter::setup(const std::shared_ptr<WNebulaView> &newView, std::s
 void WNebulaPresenter::run() {
     while (isRunning) {
         if (auto v = view.lock()) { // Convert weak_ptr to shared_ptr
-            v->processInput();
+            v->run([this](const InputEvent &event) { handleInput(event); });
         } else {
             spdlog::error("WNebulaPresenter::run: View is no longer available, stopping run loop");
             break;
@@ -29,7 +29,88 @@ void WNebulaPresenter::run() {
 // Private Helper
 void WNebulaPresenter::updateView() {
     if (auto v = view.lock()) {
-        v->render(model->getText(), model->getCursorPosition());
+        ViewState state{};
+        state.visibleText = model->getText();
+        state.cursorPosition = model->getCursorPosition();
+        state.wordCount = model->getWordCount();
+        state.filename = currentFilePath.empty() ? "Untitled" : currentFilePath;
+        state.isDirty = isDirty;
+        state.showHelp = showHelp;
+        v->render(state);
+    }
+}
+
+void WNebulaPresenter::handleInput(const InputEvent &event) {
+    if (event.type != InputEvent::Type::CTRL_Q && event.type != InputEvent::Type::ESCAPE) {
+        exitWarningShown = false;
+    }
+
+    switch (event.type) {
+    case InputEvent::Type::CHARACTER:
+        onInsert(event.character);
+        break;
+    case InputEvent::Type::BACKSPACE:
+        onDelete();
+        break;
+    case InputEvent::Type::DELETE:
+        onDeleteForward();
+        break;
+    case InputEvent::Type::ENTER:
+        onInsert('\n');
+        break;
+    case InputEvent::Type::ARROW_LEFT:
+        onMoveCursorLeft();
+        break;
+    case InputEvent::Type::ARROW_RIGHT:
+        onMoveCursorRight();
+        break;
+    case InputEvent::Type::ARROW_UP:
+        onCtrlUp(); // TODO: replace with line-aware navigation
+        break;
+    case InputEvent::Type::ARROW_DOWN:
+        onCtrlDown(); // TODO: replace with line-aware navigation
+        break;
+    case InputEvent::Type::CTRL_LEFT:
+        onCtrlLeft();
+        break;
+    case InputEvent::Type::CTRL_RIGHT:
+        onCtrlRight();
+        break;
+    case InputEvent::Type::CTRL_UP:
+        onCtrlUp();
+        break;
+    case InputEvent::Type::CTRL_DOWN:
+        onCtrlDown();
+        break;
+    case InputEvent::Type::HOME:
+        onHome();
+        break;
+    case InputEvent::Type::END:
+        onEnd();
+        break;
+    case InputEvent::Type::CTRL_S:
+        saveFile(currentFilePath);
+        break;
+    case InputEvent::Type::CTRL_O:
+        if (auto v = view.lock()) {
+            v->showMessage("Open: not yet implemented");
+        }
+        break;
+    case InputEvent::Type::PAGE_UP: // fall through
+    case InputEvent::Type::PAGE_DOWN:
+        if (auto v = view.lock()) {
+            v->showMessage("Page navigation: not yet implemented");
+        }
+        break;
+    case InputEvent::Type::F1:
+        onToggleHelp();
+        break;
+    case InputEvent::Type::CTRL_Q: // fall through
+    case InputEvent::Type::ESCAPE:
+        onExit();
+        break;
+    default:
+        break;
     }
 }
 
@@ -105,21 +186,34 @@ void WNebulaPresenter::onEnd() {
 
 // Application Control
 void WNebulaPresenter::onExit() {
-    if (isDirty) {
-        spdlog::warn("File not saved!");
+    if (isDirty && !exitWarningShown) {
+        exitWarningShown = true;
+        if (auto v = view.lock()) {
+            v->showMessage("Unsaved changes! Press Ctrl+Q again to quit.", true);
+        }
+        return;
     }
-
-    // TODO: Warn the user.
-
     isRunning = false;
+    if (auto v = view.lock()) {
+        v->exit();
+    }
+}
+
+void WNebulaPresenter::onToggleHelp() {
+    showHelp = !showHelp;
+    updateView();
 }
 
 // File I/O
-void WNebulaPresenter::saveFile(const std::string &path) { isDirty = false; }
+void WNebulaPresenter::saveFile(const std::string &path) {
+    isDirty = false;
+    updateView();
+}
 
 void WNebulaPresenter::loadFile(const std::string &path) {
     currentFilePath = path;
     isDirty = false;
+    updateView();
 }
 
 [[nodiscard]] bool WNebulaPresenter::getIsDirty() const { return isDirty; }

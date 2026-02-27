@@ -354,52 +354,78 @@ ______________________________________________________________________
 
 ## Build & Run
 
-### Quick Start
+### Getting Started
+
+#### Option A: DevContainer (Recommended — zero setup)
+
+Open the repo in VS Code and select **"Reopen in Container"**. All tools,
+compilers, and dependencies are pre-installed. Then:
 
 ```bash
-# Configure build
-cmake -B build -G Ninja
-
-# Build project
-cmake --build build
-
-# Run tests
+cmake --preset devcontainer
+ninja -C build
 ctest --test-dir build --output-on-failure
-
-# Run application
 ./build/bin/wordNebula
 ```
+
+#### Option B: Native Linux
+
+**Prerequisites** — install via your package manager:
+
+```bash
+# Debian/Ubuntu
+sudo apt-get install -y cmake ninja-build clang ccache git curl unzip
+
+# Fedora
+sudo dnf install -y cmake ninja-build clang ccache git curl unzip
+```
+
+**Install vcpkg** (one-time, any location):
+
+```bash
+git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+~/vcpkg/bootstrap-vcpkg.sh
+```
+
+**Set `VCPKG_ROOT`** — add to your `~/.zshrc` or `~/.bashrc`:
+
+```bash
+export VCPKG_ROOT=~/vcpkg
+export PATH=$VCPKG_ROOT:$PATH
+```
+
+Then reload your shell (`source ~/.zshrc`) and build:
+
+```bash
+cmake --preset linux
+ninja -C build
+ctest --test-dir build --output-on-failure
+./build/bin/wordNebula
+```
+
+> **Note:** If another cmake (e.g. STM32CubeCLT) appears first in your PATH, use
+> `/usr/bin/cmake --preset linux` explicitly.
 
 ### Build Options
 
 ```bash
-# Enable all code quality checks
-cmake -B build -G Ninja \
-  -DBUILD_TESTING=ON \
+# Enable code quality checks (append to preset configure step)
+cmake --preset devcontainer \
   -DENABLE_COVERAGE=ON \
   -DENABLE_SANITIZERS=ON \
   -DENABLE_CLANG_TIDY=ON
-
-# Build with specific compiler
-cmake -B build -G Ninja \
-  -DCMAKE_CXX_COMPILER=clang++ \
-  -DCMAKE_C_COMPILER=clang
 ```
 
 ### Development Tools
 
 ```bash
 # Format code (automatic via pre-commit hooks)
-cmake --build build --target format
+ninja -C build format
 
-# Run static analysis
-cmake -B build -DENABLE_CLANG_TIDY=ON
-cmake --build build
-
-# Generate code coverage
-cmake -B build -DENABLE_COVERAGE=ON
-cmake --build build --target coverage
-# View: build/coverage/index.html
+# Generate code coverage (uses GCC 12; outputs to build-coverage/)
+cmake --preset coverage
+ninja -C build-coverage coverage
+# View: build-coverage/coverage/index.html
 
 # Run with memory checking
 valgrind --leak-check=full ./build/bin/wordNebula
@@ -437,7 +463,7 @@ ______________________________________________________________________
 
 ### Core Libraries
 
-- **ncurses** - Terminal UI rendering
+- **FTXUI** - Modern C++ terminal UI library (functional/component-based)
 - **spdlog** - Structured logging
 
 ### Development Tools
@@ -467,17 +493,16 @@ VS Code with the Remote-Containers extension:
 
 ### Manual Installation (Ubuntu/Debian)
 
+System tools only — project dependencies (ftxui, spdlog, gtest) are managed by
+vcpkg:
+
 ```bash
 sudo apt-get update && sudo apt-get install -y \
     build-essential \
     cmake \
     ninja-build \
     clang-16 \
-    libncurses5-dev \
-    libncursesw5-dev \
-    libspdlog-dev \
-    libgtest-dev \
-    libgmock-dev \
+    ccache \
     clang-tidy \
     cppcheck \
     lcov \
@@ -533,16 +558,22 @@ wordNebula/
 │   ├── Model/                  # Buffer implementations
 │   │   ├── TextBuffer.cpp      # Simple string-based buffer
 │   │   └── GapBuffer.cpp       # Gap buffer (in development)
-│   ├── View/                   # ncurses UI
-│   │   └── WNebulaView.cpp
+│   ├── View/                   # FTXUI-based UI
+│   │   └── FtxuiView.cpp
 │   ├── Presenter/              # Business logic
 │   │   └── WNebulaPresenter.cpp
 │   └── WordNebula.cpp          # Main entry point
 ├── include/                    # Header files
-│   └── Model/
-│       ├── IBuffer.hpp         # Buffer interface
-│       ├── TextBuffer.hpp
-│       └── GapBuffer.hpp
+│   ├── Model/
+│   │   ├── IBuffer.hpp         # Buffer interface
+│   │   ├── TextBuffer.hpp
+│   │   └── GapBuffer.hpp
+│   ├── View/
+│   │   ├── IView.hpp           # View interface
+│   │   ├── FtxuiView.hpp
+│   │   └── KeyboardShortcuts.hpp
+│   └── Presenter/
+│       └── WNebulaPresenter.hpp
 ├── tests/                      # Unit tests
 │   ├── test_TextBuffer.cpp
 │   └── test_GapBuffer.cpp

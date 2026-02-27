@@ -280,17 +280,17 @@ For team sharing, build and push to registry:
 docker build -t wordnebula-dev:latest .devcontainer/
 
 # Tag for registry
-docker tag wordnebula-dev:latest ghcr.io/yourusername/wordnebula-dev:latest
+docker tag wordnebula-dev:latest ghcr.io/ileanmjr88/wordnebula-dev:latest
 
 # Push to GitHub Container Registry
-docker push ghcr.io/yourusername/wordnebula-dev:latest
+docker push ghcr.io/ileanmjr88/wordnebula-dev:latest
 ```
 
 Then update devcontainer.json:
 
 ```json
 {
-    "image": "ghcr.io/yourusername/wordnebula-dev:latest"
+    "image": "ghcr.io/ileanmjr88/wordnebula-dev:latest"
 }
 ```
 

@@ -1,5 +1,5 @@
-#include "WNebulaView.hpp"
-#include "WNebulaPresenter.hpp"
+#include "View/WNebulaView.hpp"
+#include "Presenter/WNebulaPresenter.hpp"
 #include <memory>
 #include <ncurses.h>
 #include <spdlog/spdlog.h>

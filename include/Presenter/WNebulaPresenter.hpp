@@ -1,16 +1,16 @@
 /**
- * @file WNebulaPresenter.hpp
+ * @file Presenter/WNebulaPresenter.hpp
  * @brief Presenter layer for wordNebula MVP architecture
  */
 
 #pragma once
 
+#include "View/IView.hpp"
 #include <memory>
 #include <string>
 
 namespace wnebula {
 
-class WNebulaView;
 class WNebulaModel;
 
 /**
@@ -61,7 +61,7 @@ class WNebulaPresenter {
      * @param newView Shared pointer to View (held as weak_ptr)
      * @param newModel Shared pointer to Model
      */
-    void setup(const std::shared_ptr<WNebulaView> &newView, std::shared_ptr<WNebulaModel> newModel);
+    void setup(const std::shared_ptr<IView> &newView, std::shared_ptr<WNebulaModel> newModel);
 
     /**
      * @brief Main event loop
@@ -183,6 +183,13 @@ class WNebulaPresenter {
      */
     void onExit();
 
+    /**
+     * @brief Toggle the help overlay (Ctrl+H)
+     *
+     * Flips showHelp flag and triggers View render.
+     */
+    void onToggleHelp();
+
     // ========================================================================
     // File I/O
     // ========================================================================
@@ -215,13 +222,28 @@ class WNebulaPresenter {
      */
     [[nodiscard]] bool getIsDirty() const;
 
+    /**
+     * @brief Route an InputEvent to the appropriate handler
+     *
+     * Dispatches the event to the correct operation (onInsert, onDelete,
+     * onMoveCursorLeft, onExit, etc.). Also resets the exit-warning latch
+     * for any non-exit event, so a character typed after a first Ctrl+Q
+     * press causes the next Ctrl+Q to show the warning again rather than
+     * exiting immediately.
+     *
+     * @param event The input event to dispatch
+     */
+    void handleInput(const InputEvent &event);
+
   private:
     void updateView();
 
-    std::weak_ptr<WNebulaView> view;
+    std::weak_ptr<IView> view;
     std::shared_ptr<WNebulaModel> model;
     bool isRunning = true;
     bool isDirty = false;
+    bool showHelp = false;
+    bool exitWarningShown = false;
     std::string currentFilePath = "";
 };
 } // namespace wnebula

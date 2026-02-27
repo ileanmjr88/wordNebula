@@ -90,6 +90,7 @@ endif()
 # Find Dependencies
 # ============================================================================
 find_package(Curses REQUIRED)
+find_package(ftxui CONFIG REQUIRED)
 find_package(spdlog REQUIRED)
 
 # ============================================================================
@@ -101,8 +102,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include ${CURSES_INCLUDE_DIR})
 # Source Files
 # ============================================================================
 set(WORDNEBULA_SOURCES
-    src/Model/TextBuffer.cpp src/Model/GapBuffer.cpp src/Model/WNebulaModel.cpp
-    src/View/WNebulaView.cpp src/Presenter/WNebulaPresenter.cpp
+    src/Model/TextBuffer.cpp
+    src/Model/GapBuffer.cpp
+    src/Model/WNebulaModel.cpp
+    src/View/WNebulaView.cpp
+    src/View/FtxuiView.cpp
+    src/Presenter/WNebulaPresenter.cpp
     src/WordNebula.cpp
 )
 
@@ -111,7 +116,10 @@ set(WORDNEBULA_SOURCES
 # ============================================================================
 add_executable(wordNebula ${WORDNEBULA_SOURCES})
 
-target_link_libraries(wordNebula PRIVATE ${CURSES_LIBRARIES} spdlog::spdlog)
+target_link_libraries(
+  wordNebula PRIVATE ${CURSES_LIBRARIES} ftxui::screen ftxui::dom
+                     ftxui::component spdlog::spdlog
+)
 
 target_include_directories(wordNebula PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
