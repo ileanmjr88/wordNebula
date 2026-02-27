@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Dependencies
+    - name: Install build tools
       run: |
         sudo apt-get update
         sudo apt-get install -y \
@@ -27,21 +27,26 @@ jobs:
           ninja-build \
           clang \
           llvm \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libspdlog-dev \
-          libgtest-dev \
-          libgmock-dev \
           clang-tidy \
           cppcheck \
           lcov \
           gcovr
+
+    - name: Cache vcpkg packages
+      uses: actions/cache@v4
+      with:
+        path: vcpkg_installed
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-
 
     - name: Configure CMake
       run: |
         cmake -B build \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+          -DVCPKG_INSTALLED_DIR=${{github.workspace}}/vcpkg_installed \
           -DBUILD_TESTING=ON \
           -DENABLE_COVERAGE=ON
 
@@ -80,22 +85,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Dependencies
+    - name: Install build tools
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           cmake \
           ninja-build \
           clang \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libspdlog-dev \
           clang-tidy \
           cppcheck
 
+    - name: Cache vcpkg packages
+      uses: actions/cache@v4
+      with:
+        path: vcpkg_installed
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-
+
     - name: Run clang-tidy
       run: |
-        cmake -B build -G Ninja -DENABLE_CLANG_TIDY=ON -DBUILD_TESTING=OFF
+        cmake -B build -G Ninja \
+          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+          -DVCPKG_INSTALLED_DIR=${{github.workspace}}/vcpkg_installed \
+          -DENABLE_CLANG_TIDY=ON \
+          -DBUILD_TESTING=OFF
         cmake --build build 2>&1 | tee clang-tidy-output.txt
       continue-on-error: true
 
@@ -137,24 +151,29 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Dependencies
+    - name: Install build tools
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           cmake \
           ninja-build \
-          clang \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libspdlog-dev \
-          libgtest-dev \
-          libgmock-dev
+          clang
+
+    - name: Cache vcpkg packages
+      uses: actions/cache@v4
+      with:
+        path: vcpkg_installed
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+        restore-keys: |
+          ${{ runner.os }}-vcpkg-
 
     - name: Configure CMake with Sanitizers
       run: |
         cmake -B build \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
+          -DVCPKG_INSTALLED_DIR=${{github.workspace}}/vcpkg_installed \
           -DBUILD_TESTING=ON \
           -DENABLE_SANITIZERS=ON
 
