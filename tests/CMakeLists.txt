@@ -44,6 +44,20 @@ target_include_directories(test_presenter PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 gtest_discover_tests(test_presenter)
 
+# FtxuiView Tests
+add_executable(
+  test_ftxuiview test_FtxuiView.cpp ${CMAKE_SOURCE_DIR}/src/View/FtxuiView.cpp
+)
+
+target_link_libraries(
+  test_ftxuiview PRIVATE GTest::gtest GTest::gtest_main ftxui::screen
+                         ftxui::dom ftxui::component
+)
+
+target_include_directories(test_ftxuiview PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+gtest_discover_tests(test_ftxuiview)
+
 # GapBuffer Tests (Optional - In Development) GapBuffer is currently being
 # redesigned - enable only for active development
 option(BUILD_GAPBUFFER_TESTS "Build GapBuffer tests (currently in development)"
@@ -81,6 +95,7 @@ if(ENABLE_COVERAGE)
   if(LCOV_EXE AND GENHTML_EXE)
     add_custom_target(
       coverage
+      DEPENDS test_textbuffer test_presenter test_ftxuiview
       COMMAND ${LCOV_EXE} --directory . --zerocounters
       COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
       COMMAND ${LCOV_EXE} --directory . --capture --output-file coverage.info

@@ -89,6 +89,16 @@ class FtxuiView : public IView {
      */
     void showMessage(const std::string &message, bool isError = false) override;
 
+    /**
+     * @brief Convert FTXUI event to InputEvent
+     *
+     * Translates FTXUI's event system to our InputEvent enum.
+     *
+     * @param event FTXUI event
+     * @return Translated InputEvent
+     */
+    InputEvent translateEvent(const ftxui::Event &event);
+
   private:
     /**
      * @brief Create the main UI component
@@ -148,16 +158,6 @@ class FtxuiView : public IView {
      * @return FTXUI Element representing the help overlay
      */
     ftxui::Element renderHelpOverlay();
-
-    /**
-     * @brief Convert FTXUI event to InputEvent
-     *
-     * Translates FTXUI's event system to our InputEvent enum.
-     *
-     * @param event FTXUI event
-     * @return Translated InputEvent
-     */
-    InputEvent translateEvent(const ftxui::Event &event);
 
     // FTXUI screen and components
     ftxui::ScreenInteractive screen;

@@ -222,9 +222,21 @@ class WNebulaPresenter {
      */
     [[nodiscard]] bool getIsDirty() const;
 
+    /**
+     * @brief Route an InputEvent to the appropriate handler
+     *
+     * Dispatches the event to the correct operation (onInsert, onDelete,
+     * onMoveCursorLeft, onExit, etc.). Also resets the exit-warning latch
+     * for any non-exit event, so a character typed after a first Ctrl+Q
+     * press causes the next Ctrl+Q to show the warning again rather than
+     * exiting immediately.
+     *
+     * @param event The input event to dispatch
+     */
+    void handleInput(const InputEvent &event);
+
   private:
     void updateView();
-    void handleInput(const InputEvent &event);
 
     std::weak_ptr<IView> view;
     std::shared_ptr<WNebulaModel> model;

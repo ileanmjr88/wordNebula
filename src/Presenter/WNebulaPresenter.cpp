@@ -188,11 +188,15 @@ void WNebulaPresenter::onToggleHelp() {
 }
 
 // File I/O
-void WNebulaPresenter::saveFile([[maybe_unused]] const std::string &path) { isDirty = false; }
+void WNebulaPresenter::saveFile(const std::string &path) {
+    isDirty = false;
+    updateView();
+}
 
 void WNebulaPresenter::loadFile(const std::string &path) {
     currentFilePath = path;
     isDirty = false;
+    updateView();
 }
 
 [[nodiscard]] bool WNebulaPresenter::getIsDirty() const { return isDirty; }
