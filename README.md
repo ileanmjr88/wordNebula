@@ -42,6 +42,17 @@ R.R. Martin with WordStar) prefer simple, focused tools.
 - **Screenwriters** - (Future) Screenplay format support
 - **Playwrights** - (Future) Theatrical format support
 
+### In-depth discussion of Phase 1
+- **[Part 1: The Model](https://www.ilean.me/blog/building-a-terminal-text-editor-the-model-part-1/)** —
+  Why MVP over MVC/MVVM, choosing the GapBuffer data structure, and the
+  IBuffer interface contract
+- **[Part 2: The Presenter](https://www.ilean.me/blog/building-a-terminal-text-editor-the-presenter-part-2/)** —
+  Smart pointer ownership (`shared_ptr` / `weak_ptr` to break circular
+  dependencies), the InputEvent abstraction, and the ViewState contract
+- **[Part 3: The View](https://www.ilean.me/blog/building-a-terminal-text-editor-the-view-part-3/)** —
+  Why FTXUI over ncurses, the IView interface for platform portability,
+  and cursor rendering
+
 ______________________________________________________________________
 
 ## Architecture
