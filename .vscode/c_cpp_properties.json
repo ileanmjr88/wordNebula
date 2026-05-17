@@ -1,19 +1,45 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "Compendium",
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/src",
-                "${workspaceFolder}/build/vcpkg_installed/x64-linux/include"
+                "${env:VCPKG_INSTALLED_DIR}/${env:VCPKG_TARGET_TRIPLET}/include",
+                "${env:COMPENDIUM_CC_CXX_DIR}/include/c++/v1",
+                "${env:COMPENDIUM_CC_CXX_DIR}/lib/clang/22/include"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "${env:CXX}",
+            "compilerArgs": [
+                "-stdlib=libc++"
+            ],
             "compileCommands": "${workspaceFolder}/build/compile_commands.json",
-            "cStandard": "c11",
+            "cStandard": "c17",
             "cppStandard": "c++20",
-            "intelliSenseMode": "linux-gcc-x64",
+            "intelliSenseMode": "${default}",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        },
+        {
+            "name": "Compendium Debug",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/src",
+                "${env:VCPKG_INSTALLED_DIR}/${env:VCPKG_TARGET_TRIPLET}/include",
+                "${env:COMPENDIUM_CC_CXX_DIR}/include/c++/v1",
+                "${env:COMPENDIUM_CC_CXX_DIR}/lib/clang/22/include"
+            ],
+            "defines": [],
+            "compilerPath": "${env:CXX}",
+            "compilerArgs": [
+                "-stdlib=libc++"
+            ],
+            "compileCommands": "${workspaceFolder}/build-debug/compile_commands.json",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "${default}",
             "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],

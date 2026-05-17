@@ -71,7 +71,13 @@ docs/xml/
 Doxyfile.bak
 
 # IDE and editor files
-.vscode/settings.json
+# Ignore everything in .vscode/ except the portable shared config we commit.
+# launch.json / settings.json / lldb-dap-wrapper.sh contain user-specific
+# absolute paths and personal preferences, so each developer keeps their own.
+.vscode/*
+!.vscode/tasks.json
+!.vscode/c_cpp_properties.json
+!.vscode/extensions.json
 .vscode/.ropeproject
 .idea/
 *.swp

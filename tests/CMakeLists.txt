@@ -19,7 +19,7 @@ add_executable(
 )
 
 target_link_libraries(
-  test_textbuffer PRIVATE GTest::gtest GTest::gtest_main spdlog::spdlog
+  test_textbuffer PRIVATE GTest::gtest_main spdlog::spdlog
 )
 
 target_include_directories(test_textbuffer PRIVATE ${CMAKE_SOURCE_DIR}/include)
@@ -37,7 +37,7 @@ add_executable(
 )
 
 target_link_libraries(
-  test_presenter PRIVATE GTest::gtest GTest::gtest_main spdlog::spdlog ncurses
+  test_presenter PRIVATE GTest::gtest_main spdlog::spdlog ncurses
 )
 
 target_include_directories(test_presenter PRIVATE ${CMAKE_SOURCE_DIR}/include)
@@ -50,8 +50,7 @@ add_executable(
 )
 
 target_link_libraries(
-  test_ftxuiview PRIVATE GTest::gtest GTest::gtest_main ftxui::screen
-                         ftxui::dom ftxui::component
+  test_ftxuiview PRIVATE GTest::gtest_main ftxui::component
 )
 
 target_include_directories(test_ftxuiview PRIVATE ${CMAKE_SOURCE_DIR}/include)
@@ -73,7 +72,7 @@ if(BUILD_GAPBUFFER_TESTS)
   )
 
   target_link_libraries(
-    test_gapbuffer PRIVATE GTest::gtest GTest::gtest_main spdlog::spdlog
+    test_gapbuffer PRIVATE GTest::gtest_main spdlog::spdlog
   )
 
   target_include_directories(test_gapbuffer PRIVATE ${CMAKE_SOURCE_DIR}/include)
