@@ -357,19 +357,45 @@ The project uses DevContainer for consistent development across machines.
 
 ### VS Code Configuration
 
-- **Launch Configurations** ([.vscode/launch.json](.vscode/launch.json)):
+Only portable, shared configuration is checked in. Files containing absolute
+paths or personal preferences stay local — the `.gitignore` enforces this
+with a whitelist (`.vscode/*` ignored; `tasks.json`, `c_cpp_properties.json`,
+and `extensions.json` re-included).
 
-  - Debug wordNebula
-  - Debug with sanitizers
-  - Debug tests
-  - Valgrind memory check
+**Tracked (shared):**
 
-- **Tasks** ([.vscode/tasks.json](.vscode/tasks.json)):
+- [.vscode/tasks.json](.vscode/tasks.json) — CMake configure / build / clean
+  via `compendium` presets, plus the `CMake: Format Code` target
+- [.vscode/c_cpp_properties.json](.vscode/c_cpp_properties.json) — IntelliSense
+  config. References `${env:CXX}`, `${env:VCPKG_INSTALLED_DIR}`,
+  `${env:VCPKG_TARGET_TRIPLET}`, and `${env:COMPENDIUM_CC_CXX_DIR}`; source
+  [scripts/init-env.sh](scripts/init-env.sh) before launching VS Code so
+  these resolve correctly
 
-  - CMake configure
-  - CMake build
-  - CMake clean
-  - clang-format
+**User-local (not tracked):**
+
+- `.vscode/launch.json` — debug configurations (lldb-dap for the app,
+  sanitizer build, tests, valgrind)
+- `.vscode/settings.json` — editor preferences, theme, terminal env
+- `.vscode/lldb-dap-wrapper.sh` — wrapper that points lldb-dap at the
+  compendium-managed clang toolchain
+
+Each developer maintains their own copies. When adding a new launch config or
+settings tweak, edit your local file; don't re-track it.
+
+### Environment Setup
+
+[scripts/init-env.sh](scripts/init-env.sh) wraps `compendium activate` and
+auto-derives `VCPKG_TARGET_TRIPLET` from the installed vcpkg layout (with a
+`uname`-based fallback for Linux x64/arm64 and macOS x64/arm64). Source it
+before opening VS Code or running CMake by hand so the env-var references in
+`c_cpp_properties.json` resolve:
+
+```bash
+source scripts/init-env.sh
+code .
+# or: cmake --preset compendium && cmake --build --preset compendium
+```
 
 ### DevContainer Setup
 

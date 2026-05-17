@@ -2,87 +2,82 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "CMake: configure",
+            "label": "CMake: configure (compendium)",
             "type": "shell",
-            "command": "cmake",
-            "args": [
-                "-S",
-                ".",
-                "-B",
-                "build"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "command": "source <(compendium activate) && cmake --preset compendium",
+            "group": "build",
             "problemMatcher": []
         },
         {
-            "label": "CMake: build",
+            "label": "CMake: configure (compendium-debug)",
             "type": "shell",
-            "command": "cmake",
-            "args": [
-                "--build",
-                "build"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": "CMake: configure",
-            "problemMatcher": [
-                "$gcc"
-            ]
-        },
-        {
-            "label": "CMake: clean",
-            "type": "shell",
-            "command": "rm",
-            "args": [
-                "-rf",
-                "build"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
+            "command": "source <(compendium activate) && cmake --preset compendium-debug",
+            "group": "build",
             "problemMatcher": []
         },
         {
-            "label": "CMake: clean build",
+            "label": "CMake: configure (compendium-release)",
             "type": "shell",
-            "command": "cmake",
-            "args": [
-                "--build",
-                "build"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "dependsOn": [
-                "CMake: clean",
-                "CMake: configure",
-                "CMake: build"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ]
+            "command": "source <(compendium activate) && cmake --preset compendium-release",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: build (compendium)",
+            "type": "shell",
+            "command": "source <(compendium activate) && cmake --build --preset compendium",
+            "dependsOn": "CMake: configure (compendium)",
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "CMake: build (compendium-debug)",
+            "type": "shell",
+            "command": "source <(compendium activate) && cmake --build --preset compendium-debug",
+            "dependsOn": "CMake: configure (compendium-debug)",
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "CMake: build (compendium-release)",
+            "type": "shell",
+            "command": "source <(compendium activate) && cmake --build --preset compendium-release",
+            "dependsOn": "CMake: configure (compendium-release)",
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "CTest: compendium",
+            "type": "shell",
+            "command": "source <(compendium activate) && ctest --preset compendium",
+            "dependsOn": "CMake: build (compendium)",
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "CTest: compendium-debug",
+            "type": "shell",
+            "command": "source <(compendium activate) && ctest --preset compendium-debug",
+            "dependsOn": "CMake: build (compendium-debug)",
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: clean (compendium)",
+            "type": "shell",
+            "command": "rm -rf build",
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: clean (compendium-debug)",
+            "type": "shell",
+            "command": "rm -rf build-debug",
+            "problemMatcher": []
         },
         {
             "label": "CMake: Format Code",
             "type": "shell",
-            "command": "cmake",
-            "args": [
-                "--build",
-                "build",
-                "--target",
-                "format"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
+            "command": "source <(compendium activate) && cmake --build build --target format",
             "problemMatcher": []
         }
     ]

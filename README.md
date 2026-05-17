@@ -354,63 +354,64 @@ ______________________________________________________________________
 
 ## Build & Run
 
-### Getting Started
+wordNebula uses [Compendium](https://compendium.ilean.me) to provision a
+reproducible toolchain (clang, cmake, ninja, ccache, vcpkg, Python) declared
+in [compendium.toml](compendium.toml). One-time setup pulls everything pinned
+to the project's versions — no system package install required.
 
-#### Option A: DevContainer (Recommended — zero setup)
-
-Open the repo in VS Code and select **"Reopen in Container"**. All tools,
-compilers, and dependencies are pre-installed. Then:
-
-```bash
-cmake --preset devcontainer
-ninja -C build
-ctest --test-dir build --output-on-failure
-./build/bin/wordNebula
-```
-
-#### Option B: Native Linux
-
-**Prerequisites** — install via your package manager:
+### 1. Install Compendium (one-time, machine-wide)
 
 ```bash
-# Debian/Ubuntu
-sudo apt-get install -y cmake ninja-build clang ccache git curl unzip
+# curl
+curl -fsSL https://compendium.ilean.me/install.sh | sh
 
-# Fedora
-sudo dnf install -y cmake ninja-build clang ccache git curl unzip
+# or wget
+wget -qO- https://compendium.ilean.me/install.sh | sh
 ```
 
-**Install vcpkg** (one-time, any location):
+Add `~/.local/bin` to your `PATH` if the installer prompts you, then restart
+your shell.
+
+### 2. Provision the project toolchain
+
+From the repo root, install everything declared in `compendium.toml` (clang
+22, cmake, ninja, ccache, vcpkg, and project libraries via vcpkg):
 
 ```bash
-git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
-~/vcpkg/bootstrap-vcpkg.sh
+compendium install
 ```
 
-**Set `VCPKG_ROOT`** — add to your `~/.zshrc` or `~/.bashrc`:
+### 3. Activate the environment
+
+Source the project's init script before building or opening VS Code. It runs
+`compendium activate` and derives `VCPKG_TARGET_TRIPLET` for your platform
+(arm64-osx, x64-osx, x64-linux, arm64-linux):
 
 ```bash
-export VCPKG_ROOT=~/vcpkg
-export PATH=$VCPKG_ROOT:$PATH
+source scripts/init-env.sh
 ```
 
-Then reload your shell (`source ~/.zshrc`) and build:
+> Re-run this in any new shell where you want to build or debug wordNebula.
+
+### 4. Build, test, and run
 
 ```bash
-cmake --preset linux
-ninja -C build
-ctest --test-dir build --output-on-failure
-./build/bin/wordNebula
+cmake --preset compendium             # configure
+cmake --build --preset compendium     # build
+ctest  --preset compendium            # test
+./build/bin/wordNebula                # run
 ```
 
-> **Note:** If another cmake (e.g. STM32CubeCLT) appears first in your PATH, use
-> `/usr/bin/cmake --preset linux` explicitly.
+Other presets:
+
+- `compendium-debug` — Debug build with AddressSanitizer + UBSan
+- `compendium-release` — optimized release build
 
 ### Build Options
 
 ```bash
-# Enable code quality checks (append to preset configure step)
-cmake --preset devcontainer \
+# Enable extra code-quality checks
+cmake --preset compendium \
   -DENABLE_COVERAGE=ON \
   -DENABLE_SANITIZERS=ON \
   -DENABLE_CLANG_TIDY=ON
@@ -420,14 +421,14 @@ cmake --preset devcontainer \
 
 ```bash
 # Format code (automatic via pre-commit hooks)
-ninja -C build format
+cmake --build build --target format
 
-# Generate code coverage (uses GCC 12; outputs to build-coverage/)
+# Code coverage (uses GCC 12; outputs to build-coverage/)
 cmake --preset coverage
-ninja -C build-coverage coverage
+cmake --build build-coverage --target coverage
 # View: build-coverage/coverage/index.html
 
-# Run with memory checking
+# Memory checking
 valgrind --leak-check=full ./build/bin/wordNebula
 ```
 

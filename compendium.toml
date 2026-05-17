@@ -1,0 +1,21 @@
+[compendium]
+name = "wordNebula"
+version = "0.1.0"
+min_compendium = "0.1.0"
+
+[registry]
+source = "public"
+
+[languages]
+cpp = "clang@22.1.2"
+python = "3.11.15"
+
+[tools]
+cmake = "4.3.1"
+ninja = "1.13.2"
+vcpkg = "2026-02-21"
+ccache = "4.12.3"
+
+[packages]
+vcpkg = "vcpkg.json"
+pip = "requirements.txt"
